@@ -4,14 +4,14 @@ spring:
   server:
     port: ${PORT:8080}
 
-  # PostgreSQL Configuration for Render
+  # ✅ CONECTAR A POSTGRESQL DE RENDER
   datasource:
-    url: ${DATABASE_URL}
-    username: ${DATABASE_USERNAME}
-    password: ${DATABASE_PASSWORD}
+    url: ${DATABASE_URL:jdbc:h2:mem:inmobiliaria_dc}
+    username: ${DATABASE_USERNAME:sa}
+    password: ${DATABASE_PASSWORD:}
     driver-class-name: org.postgresql.Driver
 
-  # JPA Configuration
+  # ✅ JPA para PostgreSQL
   jpa:
     hibernate:
       ddl-auto: update
@@ -20,9 +20,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
-        jdbc:
-          lob:
-            non_contextual_creation: true
+        default_schema: public
 
   # Thymeleaf
   thymeleaf:
@@ -36,5 +34,5 @@ spring:
 
 logging:
   level:
-    com.dcInmobiliaria: DEBUG
+    com.dcInmobiliaria: INFO
     org.springframework: INFO
