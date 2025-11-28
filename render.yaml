@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: inmobiliaria-dc-dannra77
+    name: inmobiliaria-dc-dannra777
     plan: free
     buildCommand: mvn clean package -DskipTests
     startCommand: java -jar target/*.jar
