@@ -3,6 +3,7 @@ FROM maven:3.8.6-eclipse-temurin-17 AS builder
 WORKDIR /app
 
 COPY . .
+# Compilar con filtrado de recursos
 RUN mvn clean package -DskipTests -Dfile.encoding=UTF-8
 
 # Fase de ejecución
@@ -13,4 +14,4 @@ COPY --from=builder /app/target/*.jar app.jar
 
 EXPOSE 8080
 
-ENTRYPOINT ["java", "-jar", "app.jar"]
+CMD ["java", "-jar", "app.jar"]
