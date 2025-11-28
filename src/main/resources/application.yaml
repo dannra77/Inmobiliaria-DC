@@ -4,28 +4,25 @@ spring:
   server:
     port: ${PORT:8080}
 
-  # H2 Database
+  # PostgreSQL Configuration for Render
   datasource:
-    url: jdbc:h2:mem:inmobiliaria_dc;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-    driver-class-name: org.h2.Driver
-    username: sa
-    password: ""
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
 
   # JPA Configuration
   jpa:
     hibernate:
-      ddl-auto: create-drop
-    database-platform: org.hibernate.dialect.H2Dialect
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     show-sql: true
     properties:
       hibernate:
         format_sql: true
-
-  # H2 Console
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
+        jdbc:
+          lob:
+            non_contextual_creation: true
 
   # Thymeleaf
   thymeleaf:
@@ -37,7 +34,7 @@ spring:
       name: admin
       password: dc2024
 
-# Logging
 logging:
   level:
     com.dcInmobiliaria: DEBUG
+    org.springframework: INFO
