@@ -2,8 +2,9 @@
 FROM maven:3.8.6-eclipse-temurin-17 AS builder
 WORKDIR /app
 
-# Copiar todo el proyecto
-COPY . .
+# Copiar archivos del proyecto
+COPY pom.xml .
+COPY src src
 
 # Compilar la aplicación
 RUN mvn clean package -DskipTests
