@@ -1,12 +1,17 @@
-FROM eclipse-temurin:17-jdk-jammy
-WORKDIR /app
+# Fase de construcción
+FROM eclipse-temurin:17-jdk-jammy AS builder
+WORKDIR /workspace/app
 
-# Copiar archivos del proyecto
-COPY . .
+# Copiar archivos de construcción
+COPY pom.xml .
+COPY src src
 
-# Construir la aplicación
+# Compilar la aplicación
 RUN ./mvnw clean package -DskipTests
 
-# Ejecutar
+# Fase de ejecución
+FROM eclipse-temurin:17-jdk-jammy
+WORKDIR /app
+COPY --from=builder /workspace/app/target/*.jar app.jar
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "target/*.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
