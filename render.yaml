@@ -1,7 +1,6 @@
 services:
   - type: web
     name: inmobiliaria-dc-dannra77
-    runtime: docker  # ← CAMBIA A DOCKER
     plan: free
     buildCommand: mvn clean package -DskipTests
     startCommand: java -jar target/*.jar
