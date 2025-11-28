@@ -1,16 +1,12 @@
 services:
   - type: web
-    name: inmobiliaria-dc
-    env: java
+    name: inmobiliaria-dc-dannra77
     plan: free
     buildCommand: mvn clean package -DskipTests
     startCommand: java -jar target/*.jar
-    envVars:
-      - key: JAVA_VERSION
-        value: 17
     healthCheckPath: /
 
 databases:
-  - name: inmobiliaria-db
+  - name: inmobiliaria-db-dannra77
     plan: free
     databaseName: inmobiliaria_dc
