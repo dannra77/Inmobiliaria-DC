@@ -2,24 +2,28 @@
 FROM maven:3.8.6-eclipse-temurin-17 AS builder
 WORKDIR /workspace/app
 
-# Copiar archivo de dependencias primero (para cache)
-COPY pom.xml .
-RUN mvn dependency:go-offline
+# Configurar encoding UTF-8 desde el inicio
+ENV LANG C.UTF-8
+ENV LC_ALL C.UTF-8
 
-# Copiar código fuente y compilar
+# Copiar archivo de dependencias primero
+COPY pom.xml .
+RUN mvn dependency:go-offline -Dfile.encoding=UTF-8
+
+# Copiar código fuente
 COPY src src
-RUN mvn clean package -DskipTests
+
+# Compilar con encoding explícito
+RUN mvn clean package -DskipTests -Dfile.encoding=UTF-8
 
 # Fase de ejecución
 FROM eclipse-temurin:17-jdk-jammy
 WORKDIR /app
 
-# Instalar wait-for-it para esperar por la base de datos
-RUN apt-get update && apt-get install -y wait-for-it
+# Configurar encoding también en runtime
+ENV LANG C.UTF-8
+ENV LC_ALL C.UTF-8
 
 COPY --from=builder /workspace/app/target/*.jar app.jar
-
 EXPOSE 8080
-
-# Usar forma exec para mejor manejo de señales
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-Dfile.encoding=UTF-8", "-jar", "app.jar"]
