@@ -1,10 +1,15 @@
 services:
   - type: web
-    name: inmobiliaria-dc-dannra777
+    name: inmobiliaria-dc-dannra77  # ← CORREGIDO: quité un "7" extra
     plan: free
     buildCommand: mvn clean package -DskipTests
     startCommand: java -jar target/*.jar
-    healthCheckPath: /
+    healthCheckPath: /health
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: inmobiliaria-db-dannra77
+          property: connectionString
 
 databases:
   - name: inmobiliaria-db-dannra77
