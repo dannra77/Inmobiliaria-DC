@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <title th:text="${titulo}">Formulario de Contrato - Inmobiliaria DC</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        /* Tus estilos CSS aquí (se mantienen igual) */
+        body { background-color: #1e1e1e; color: white; font-family: 'Segoe UI', padding-top: 20px; }
+        .form-container { max-width: 1200px; margin: 0 auto; background-color: #2c2c2c; padding: 20px; border-radius: 12px; }
+        label { font-weight: 600; color: #a75858; }
+        .form-control, .form-select { background-color: #3b3b3b; border: 1px solid #a75858; color: white; }
+        .form-control:focus, .form-select:focus { background-color: #4a4a4a; border-color: #d07a7a; box-shadow: 0 0 8px rgba(208, 122, 122, 0.7); }
+        .btn-primary { background-color: #a75858; border: none; }
+        .btn-primary:hover { background-color: #d07a7a; }
+
+        .form-section {
+            background: #363636;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #a75858;
+        }
+        .section-title {
+            color: #d07a7a;
+            margin-bottom: 15px;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        .participant-item {
+            margin-bottom: 10px;
+            padding: 10px;
+            background: #2c2c2c;
+            border-radius: 5px;
+            border: 1px solid #444;
+        }
+
+        .model-option {
+            background: #3b3b3b;
+            border: 2px solid #444;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .model-option:hover {
+            border-color: #a75858;
+            background: #4a4a4a;
+        }
+        .model-option.selected {
+            border-color: #a75858;
+            background: #4a4a4a;
+            box-shadow: 0 0 10px rgba(208, 122, 122, 0.3);
+        }
+        .model-number {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: #a75858;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .nav-tabs { border-bottom: 2px solid #a75858; }
+        .nav-tabs .nav-link {
+            color: #ccc;
+            background: #3b3b3b;
+            border: 1px solid #444;
+            border-bottom: none;
+            margin-right: 5px;
+            border-radius: 8px 8px 0 0;
+        }
+        .nav-tabs .nav-link:hover {
+            color: #fff;
+            background: #4a4a4a;
+        }
+        .nav-tabs .nav-link.active {
+            color: #fff;
+            background: #a75858;
+            border-color: #a75858;
+        }
+        .tab-content {
+            background: #363636;
+            padding: 20px;
+            border: 1px solid #444;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            min-height: 400px;
+        }
+
+        .progress-container {
+            margin-bottom: 20px;
+        }
+        .progress {
+            height: 8px;
+            background-color: #3b3b3b;
+        }
+        .progress-bar {
+            background-color: #a75858;
+        }
+        .step-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        .step {
+            text-align: center;
+            flex: 1;
+        }
+        .step-number {
+            width: 30px;
+            height: 30px;
+            background: #3b3b3b;
+            color: #ccc;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 5px;
+        }
+        .step.active .step-number {
+            background: #a75858;
+            color: white;
+        }
+        .step.completed .step-number {
+            background: #28a745;
+            color: white;
+        }
+
+        .is-invalid {
+            border-color: #dc3545 !important;
+        }
+        .invalid-feedback {
+            display: none;
+            color: #dc3545;
+            font-size: 0.875em;
+            margin-top: 0.25rem;
+        }
+        .error-message {
+            background-color: #dc3545;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        .field-error {
+            border: 2px solid #dc3545 !important;
+            animation: shake 0.5s ease-in-out;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        #propiedadId {
+            display: none;
+        }
+
+        .seccion-tipo-temporalidad {
+            background-color: #2d3748;
+            border-left: 4px solid #ecc94b;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-radius: 8px;
+        }
+        .tipo-temporalidad-option {
+            background: #3b3b3b;
+            border: 2px solid #444;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .tipo-temporalidad-option:hover {
+            border-color: #ecc94b;
+            background: #4a4a4a;
+        }
+        .tipo-temporalidad-option.selected {
+            border-color: #ecc94b;
+            background: #4a4a4a;
+            box-shadow: 0 0 10px rgba(236, 201, 75, 0.3);
+        }
+        .info-text {
+            font-size: 0.9rem;
+            color: #cbd5e0;
+            margin-bottom: 10px;
+        }
+
+        .vehiculo-info {
+            background-color: #2d3748;
+            border-left: 4px solid #4299e1;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+
+        .campos-contrato-nuevo, .campos-contrato-existente {
+            transition: all 0.3s ease;
+        }
+        .campo-requerido::after {
+            content: " *";
+            color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+<div class="form-container">
+    <h2>📄 <span th:text="${titulo}">Formulario de Contrato</span></h2>
+
+    <!-- Mensajes -->
+    <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fas fa-check-circle me-2"></i>
+        <span th:text="${success}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-circle me-2"></i>
+        <span th:text="${error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <!-- Barra de progreso -->
+    <div class="progress-container">
+        <div class="progress">
+            <div class="progress-bar" role="progressbar" style="width: 20%" id="progress-bar"></div>
+        </div>
+        <div class="step-indicator">
+            <div class="step active" id="step-1">
+                <div class="step-number">1</div>
+                <small>Modelo</small>
+            </div>
+            <div class="step" id="step-2">
+                <div class="step-number">2</div>
+                <small>Básico</small>
+            </div>
+            <div class="step" id="step-3">
+                <div class="step-number">3</div>
+                <small>Partes</small>
+            </div>
+            <div class="step" id="step-4">
+                <div class="step-number">4</div>
+                <small>Finanzas</small>
+            </div>
+            <div class="step" id="step-5">
+                <div class="step-number">5</div>
+                <small>Servicios</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mensaje de errores -->
+    <div id="error-message" class="error-message" style="display: none;">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        <span id="error-text">Por favor, corrija los errores en el formulario.</span>
+    </div>
+
+    <form th:action="@{/contratos/guardar}" method="post" novalidate id="contrato-form">
+
+        <!-- CAMPOS OCULTOS CRÍTICOS -->
+        <input type="hidden" name="propiedadId" id="propiedadId" th:value="${propiedadSeleccionada}">
+        <input type="hidden" name="esContratoExistente" id="esContratoExistente" value="false">
+
+        <!-- Pestañas -->
+        <ul class="nav nav-tabs" id="contratoTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="modelo-tab" data-bs-toggle="tab" data-bs-target="#modelo" type="button" role="tab">
+                    <i class="fas fa-cube me-1"></i>Modelo
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="basico-tab" data-bs-toggle="tab" data-bs-target="#basico" type="button" role="tab">
+                    <i class="fas fa-info-circle me-1"></i>Información Básica
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="partes-tab" data-bs-toggle="tab" data-bs-target="#partes" type="button" role="tab">
+                    <i class="fas fa-users me-1"></i>Partes
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="finanzas-tab" data-bs-toggle="tab" data-bs-target="#finanzas" type="button" role="tab">
+                    <i class="fas fa-money-bill me-1"></i>Finanzas
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="servicios-tab" data-bs-toggle="tab" data-bs-target="#servicios" type="button" role="tab">
+                    <i class="fas fa-bolt me-1"></i>Servicios
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="contratoTabsContent">
+
+            <!-- Pestaña 1: Modelo -->
+            <div class="tab-pane fade show active" id="modelo" role="tabpanel">
+                <h4 class="section-title">📋 Seleccione el Modelo de Contrato</h4>
+                <p class="text-muted mb-3">Elija uno de los modelos predefinidos para generar el contrato.</p>
+
+                <!-- Sección de Temporalidad -->
+                <div class="seccion-tipo-temporalidad">
+                    <h5 class="section-title">⏰ Temporalidad del Contrato</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="tipo-temporalidad-option" onclick="seleccionarTemporalidad('nuevo')">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="temporalidadContrato" id="temporalidadNuevo" value="nuevo" checked>
+                                    <label class="form-check-label fw-bold" for="temporalidadNuevo">
+                                        <i class="fas fa-plus-circle me-2 text-success"></i>
+                                        <strong>Contrato Nuevo</strong>
+                                    </label>
+                                </div>
+                                <div class="mt-2 small text-muted">
+                                    Contrato que inicia ahora. El sistema generará todas las cuotas desde el inicio.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="tipo-temporalidad-option" onclick="seleccionarTemporalidad('existente')">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="temporalidadContrato" id="temporalidadExistente" value="existente">
+                                    <label class="form-check-label fw-bold" for="temporalidadExistente">
+                                        <i class="fas fa-history me-2 text-warning"></i>
+                                        <strong>Contrato Existente</strong>
+                                    </label>
+                                </div>
+                                <div class="mt-2 small text-muted">
+                                    Contrato ya vigente que se incorpora al sistema. Usted toma la administración ahora.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modelos de Contrato -->
+                <div class="mb-3">
+                    <div class="model-option" onclick="seleccionarModelo(1)">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="modeloContrato" id="modelo1" value="1">
+                            <label class="form-check-label" for="modelo1">
+                                <span class="model-number">1</span>
+                                <strong>Modelo Básico Residencial</strong>
+                            </label>
+                        </div>
+                        <div class="mt-2 small text-muted">
+                            Contrato estándar para viviendas familiares. Incluye cláusulas básicas de alquiler residencial.
+                        </div>
+                    </div>
+
+                    <div class="model-option" onclick="seleccionarModelo(2)">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="modeloContrato" id="modelo2" value="2">
+                            <label class="form-check-label" for="modelo2">
+                                <span class="model-number">2</span>
+                                <strong>Modelo Comercial</strong>
+                            </label>
+                        </div>
+                        <div class="mt-2 small text-muted">
+                            Para locales comerciales y oficinas. Incluye cláusulas específicas para uso comercial.
+                        </div>
+                    </div>
+
+                    <div class="model-option" onclick="seleccionarModelo(3)">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="modeloContrato" id="modelo3" value="3">
+                            <label class="form-check-label" for="modelo3">
+                                <span class="model-number">3</span>
+                                <strong>Modelo Premium</strong>
+                            </label>
+                        </div>
+                        <div class="mt-2 small text-muted">
+                            Para propiedades de alta gama. Incluye cláusulas de mantenimiento y garantías extendidas.
+                        </div>
+                    </div>
+
+                    <div class="model-option" onclick="seleccionarModelo(4)">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="modeloContrato" id="modelo4" value="4">
+                            <label class="form-check-label" for="modelo4">
+                                <span class="model-number">4</span>
+                                <strong>Modelo Cochera</strong>
+                            </label>
+                        </div>
+                        <div class="mt-2 small text-muted">
+                            Especial para cocheras. Incluye campos específicos para información vehicular.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end mt-4">
+                    <button type="button" class="btn btn-primary" onclick="siguienteTab('basico-tab')">
+                        Siguiente <i class="fas fa-arrow-right ms-1"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Pestaña 2: Información Básica -->
+            <div class="tab-pane fade" id="basico" role="tabpanel">
+                <h4 class="section-title">📋 Información Básica del Contrato</h4>
+
+                <!-- Campos dinámicos según tipo de contrato -->
+                <div class="campos-contrato-nuevo" id="camposContratoNuevo">
+                    <div class="alert alert-info mb-4">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Contrato Nuevo:</strong> Complete las fechas de inicio y fin del contrato.
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="fechaInicio" class="form-label campo-requerido">📅 Fecha de Inicio</label>
+                            <input type="date" name="fechaInicio" class="form-control" id="fechaInicio">
+                            <div class="invalid-feedback" id="fechaInicio-error">Ingrese la fecha de inicio</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="fechaFin" class="form-label campo-requerido">📅 Fecha de Fin</label>
+                            <input type="date" name="fechaFin" class="form-control" id="fechaFin">
+                            <div class="invalid-feedback" id="fechaFin-error">Ingrese la fecha de fin</div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="montoMensual" class="form-label campo-requerido">💰 Monto Mensual</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" name="montoMensual" class="form-control" id="montoMensual" step="0.01" min="0" value="50000">
+                            </div>
+                            <div class="invalid-feedback" id="montoMensual-error">Ingrese el monto mensual</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="campos-contrato-existente" id="camposContratoExistente" style="display: none;">
+                    <div class="alert alert-warning mb-4">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Contrato Existente:</strong> Complete las fechas reales del contrato y cuándo usted toma la administración.
+                    </div>
+
+                    <!-- Fechas del Contrato Existente -->
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="fechaInicioOriginal" class="form-label campo-requerido">📅 Fecha Inicio Real</label>
+                            <input type="date" name="fechaInicioOriginal" class="form-control" id="fechaInicioOriginal">
+                            <div class="invalid-feedback" id="fechaInicioOriginal-error">Ingrese la fecha real de inicio</div>
+                            <small class="form-text text-muted">Cuándo realmente empezó el contrato</small>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="fechaInicioAdministracion" class="form-label campo-requerido">📊 Fecha Su Administración</label>
+                            <input type="date" name="fechaInicioAdministracion" class="form-control" id="fechaInicioAdministracion">
+                            <div class="invalid-feedback" id="fechaInicioAdministracion-error">Ingrese la fecha de inicio de su administración</div>
+                            <small class="form-text text-muted">Cuándo usted toma la gestión</small>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="fechaFinExistente" class="form-label campo-requerido">📅 Fecha Fin Contrato</label>
+                            <input type="date" name="fechaFinExistente" class="form-control" id="fechaFinExistente">
+                            <div class="invalid-feedback" id="fechaFinExistente-error">Ingrese la fecha de fin</div>
+                            <small class="form-text text-muted">Cuándo finaliza el contrato</small>
+                        </div>
+                    </div>
+
+                    <!-- Montos del Contrato Existente -->
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="montoInicial" class="form-label campo-requerido">💰 Monto Actual</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" name="montoInicial" class="form-control" id="montoInicial" step="0.01" min="0" value="50000">
+                            </div>
+                            <div class="invalid-feedback" id="montoInicial-error">Ingrese el monto actual que se paga</div>
+                            <small class="form-text text-muted">Cuánto se paga HOY</small>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="montoMensualExistente" class="form-label">💰 Monto Inicial (opcional)</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" name="montoMensualExistente" class="form-control" id="montoMensualExistente" step="0.01" min="0" value="45000">
+                            </div>
+                            <small class="form-text text-muted">Monto inicial del contrato (si lo sabe)</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Campos comunes para ambos tipos -->
+                <div class="row mt-4">
+                    <div class="col-md-6 mb-3">
+                        <label for="propiedad" class="form-label campo-requerido">🏠 Propiedad</label>
+                        <select name="propiedad" class="form-select" id="propiedad" onchange="actualizarPropiedadId(); actualizarTipoPropiedad()">
+                            <option value="">Seleccionar propiedad...</option>
+                            <option th:each="propiedad : ${propiedades}"
+                                    th:value="${propiedad.id}"
+                                    th:text="${propiedad.direccion + ' - ' + propiedad.tipo}"
+                                    th:data-tipo="${propiedad.tipo}">
+                            </option>
+                        </select>
+                        <div class="invalid-feedback" id="propiedad-error">Seleccione una propiedad</div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">🔢 Número de Contrato</label>
+                        <input type="text" name="numeroContrato" class="form-control" readonly th:value="${contrato?.numeroContrato ?: 'Generando...'}">
+                        <small class="form-text text-muted">Generado automáticamente</small>
+                    </div>
+                </div>
+
+                <!-- Campos comunes CRÍTICOS -->
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label for="diaVencimiento" class="form-label campo-requerido">📅 Día de Vencimiento</label>
+                        <select name="diaVencimiento" class="form-select" id="diaVencimiento">
+                            <option value="">Seleccione día...</option>
+                            <option value="1">1 - Primero del mes</option>
+                            <option value="5">5 - Quinto del mes</option>
+                            <option value="10">10 - Décimo del mes</option>
+                            <option value="15">15 - Quincena</option>
+                            <option value="20">20 - Veinte del mes</option>
+                            <option value="25">25 - Veinticinco del mes</option>
+                        </select>
+                        <div class="invalid-feedback" id="diaVencimiento-error">Seleccione el día de vencimiento</div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="montoExpensas" class="form-label">🏢 Monto de Expensas</label>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            <input type="number" name="montoExpensas" class="form-control" id="montoExpensas" step="0.01" min="0">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Información del Vehículo (solo para cocheras) -->
+                <div class="vehiculo-info" id="seccionVehiculo" style="display: none;">
+                    <h5 class="section-title">🚗 Información del Vehículo (Cochera)</h5>
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <label for="vehiculoMarca" class="form-label">Marca</label>
+                            <input type="text" name="vehiculoMarca" class="form-control" id="vehiculoMarca" placeholder="Ej: Toyota">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="vehiculoModelo" class="form-label">Modelo</label>
+                            <input type="text" name="vehiculoModelo" class="form-control" id="vehiculoModelo" placeholder="Ej: Corolla">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="vehiculoColor" class="form-label">Color</label>
+                            <input type="text" name="vehiculoColor" class="form-control" id="vehiculoColor" placeholder="Ej: Rojo">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="vehiculoPatente" class="form-label">Patente</label>
+                            <input type="text" name="vehiculoPatente" class="form-control" id="vehiculoPatente" placeholder="Ej: AB123CD">
+                        </div>
+                    </div>
+                    <p class="info-text">
+                        Complete esta información solo si el inmueble es una cochera. Si no es necesario, los campos pueden quedar vacíos.
+                    </p>
+                </div>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <button type="button" class="btn btn-secondary" onclick="anteriorTab('modelo-tab')">
+                        <i class="fas fa-arrow-left me-1"></i>Anterior
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="siguienteTab('partes-tab')">
+                        Siguiente <i class="fas fa-arrow-right ms-1"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Pestaña 3: Partes del Contrato -->
+            <div class="tab-pane fade" id="partes" role="tabpanel">
+                <h4 class="section-title">👥 Partes del Contrato</h4>
+
+                <!-- SOLICITANTE -->
+                <div class="row mb-4">
+                    <div class="col-md-12 mb-3">
+                        <label for="solicitanteId" class="form-label campo-requerido">📝 SOLICITANTE (Principal)</label>
+                        <select name="solicitanteId" class="form-select" id="solicitanteId">
+                            <option value="">Seleccionar solicitante...</option>
+                            <option th:each="persona : ${personas}"
+                                    th:value="${persona.id}"
+                                    th:text="${persona.nombreCompleto + ' - DNI: ' + persona.dni}">
+                            </option>
+                        </select>
+                        <div class="invalid-feedback" id="solicitanteId-error">Seleccione un solicitante</div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="locadorId" class="form-label campo-requerido">🏠 Locador (Propietario)</label>
+                        <select name="locadorId" class="form-select" id="locadorId">
+                            <option value="">Seleccionar locador...</option>
+                            <option th:each="persona : ${personas}"
+                                    th:value="${persona.id}"
+                                    th:text="${persona.nombreCompleto + ' - DNI: ' + persona.dni}">
+                            </option>
+                        </select>
+                        <div class="invalid-feedback" id="locadorId-error">Seleccione un locador</div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="locatarioId" class="form-label campo-requerido">👤 Locatario (Inquilino)</label>
+                        <select name="locatarioId" class="form-select" id="locatarioId">
+                            <option value="">Seleccionar locatario...</option>
+                            <option th:each="persona : ${personas}"
+                                    th:value="${persona.id}"
+                                    th:text="${persona.nombreCompleto + ' - DNI: ' + persona.dni}">
+                            </option>
+                        </select>
+                        <div class="invalid-feedback" id="locatarioId-error">Seleccione un locatario</div>
+                    </div>
+                </div>
+
+                <!-- Garantes -->
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <label class="form-label fw-bold">🔒 Garantes</label>
+                        <button type="button" class="btn btn-outline-primary btn-sm" onclick="agregarGarante()">
+                            <i class="fas fa-plus me-1"></i>Agregar Garante
+                        </button>
+                    </div>
+                    <div id="garantes-container">
+                        <!-- Garante inicial -->
+                        <div class="participant-item d-flex align-items-center">
+                            <select name="garantesIds" class="form-select me-2">
+                                <option value="">Seleccionar garante...</option>
+                                <option th:each="persona : ${personas}"
+                                        th:value="${persona.id}"
+                                        th:text="${persona.nombreCompleto + ' - DNI: ' + persona.dni}">
+                                </option>
+                            </select>
+                            <button type="button" class="btn btn-outline-danger btn-sm" onclick="removerGarante(this)">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Habitantes -->
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <label class="form-label fw-bold">👨‍👩‍👧‍👦 Habitantes</label>
+                        <button type="button" class="btn btn-outline-primary btn-sm" onclick="agregarHabitante()">
+                            <i class="fas fa-plus me-1"></i>Agregar Habitante
+                        </button>
+                    </div>
+                    <div id="habitantes-container">
+                        <!-- Habitante inicial -->
+                        <div class="participant-item d-flex align-items-center">
+                            <select name="habitantesIds" class="form-select me-2">
+                                <option value="">Seleccionar habitante...</option>
+                                <option th:each="persona : ${personas}"
+                                        th:value="${persona.id}"
+                                        th:text="${persona.nombreCompleto + ' - DNI: ' + persona.dni}">
+                                </option>
+                            </select>
+                            <button type="button" class="btn btn-outline-danger btn-sm" onclick="removerHabitante(this)">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <button type="button" class="btn btn-secondary" onclick="anteriorTab('basico-tab')">
+                        <i class="fas fa-arrow-left me-1"></i>Anterior
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="siguienteTab('finanzas-tab')">
+                        Siguiente <i class="fas fa-arrow-right ms-1"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Pestaña 4: Términos Financieros -->
+            <div class="tab-pane fade" id="finanzas" role="tabpanel">
+                <h4 class="section-title">💰 Términos Financieros</h4>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="porcentajeMora" class="form-label">⚠️ Porcentaje de Mora Diario</label>
+                        <div class="input-group">
+                            <input type="number" name="porcentajeMora" class="form-control" id="porcentajeMora" step="0.01" min="0" max="100" value="5.00">
+                            <span class="input-group-text">%</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="lugarPago" class="form-label">🏦 Lugar de Pago</label>
+                        <select name="lugarPago" class="form-select" id="lugarPago">
+                            <option th:each="lugar : ${lugaresPago}"
+                                    th:value="${lugar}"
+                                    th:text="${lugar.descripcion}">
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="lugarAdministracion" class="form-label">🏢 Lugar de Administración</label>
+                        <select name="lugarAdministracion" class="form-select" id="lugarAdministracion">
+                            <option th:each="lugar : ${lugaresAdministracion}"
+                                    th:value="${lugar}"
+                                    th:text="${lugar.descripcion}">
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <button type="button" class="btn btn-secondary" onclick="anteriorTab('partes-tab')">
+                        <i class="fas fa-arrow-left me-1"></i>Anterior
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="siguienteTab('servicios-tab')">
+                        Siguiente <i class="fas fa-arrow-right ms-1"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Pestaña 5: Servicios y Términos -->
+            <div class="tab-pane fade" id="servicios" role="tabpanel">
+                <h4 class="section-title">⚡ Servicios y Términos del Contrato</h4>
+
+                <!-- Servicios y Expensas -->
+                <div class="form-section">
+                    <h5 class="section-title">🏢 Servicios y Expensas</h5>
+
+                    <!-- Expensas -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Expensas</label>
+                            <div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="expensasOption" id="expensasSi" value="SI" checked>
+                                    <label class="form-check-label" for="expensasSi">
+                                        Sí contiene expensas
+                                    </label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="expensasOption" id="expensasNo" value="NO">
+                                    <label class="form-check-label" for="expensasNo">
+                                        No contiene expensas
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="responsableExpensas" class="form-label">Responsable de Expensas</label>
+                            <select name="responsableExpensas" class="form-select" id="responsableExpensas">
+                                <option th:each="responsable : ${responsables}"
+                                        th:value="${responsable}"
+                                        th:text="${responsable.descripcion}">
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Servicios -->
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="agua" class="form-label">💧 Agua</label>
+                            <select name="agua" class="form-select" id="agua">
+                                <option th:each="responsable : ${responsables}"
+                                        th:value="${responsable}"
+                                        th:text="${responsable.descripcion}">
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="gas" class="form-label">🔥 Gas</label>
+                            <select name="gas" class="form-select" id="gas">
+                                <option th:each="responsable : ${responsables}"
+                                        th:value="${responsable}"
+                                        th:text="${responsable.descripcion}">
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="tgi" class="form-label">📊 TGI (Impuesto Gas)</label>
+                            <select name="tgi" class="form-select" id="tgi">
+                                <option th:each="responsable : ${responsables}"
+                                        th:value="${responsable}"
+                                        th:text="${responsable.descripcion}">
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="seguro" class="form-label">🛡️ Seguro</label>
+                            <select name="seguro" class="form-select" id="seguro">
+                                <option th:each="responsable : ${responsables}"
+                                        th:value="${responsable}"
+                                        th:text="${responsable.descripcion}">
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Términos del Contrato -->
+                <div class="form-section">
+                    <h5 class="section-title">📝 Términos del Contrato</h5>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="tipoIndice" class="form-label campo-requerido">📈 Índice de Ajuste</label>
+                            <select name="tipoIndice" class="form-select" id="tipoIndice">
+                                <option value="">Seleccione un índice...</option>
+                                <option value="IPC">IPC - Índice de Precios al Consumidor</option>
+                                <option value="ICL">ICL - Índice de Contratos de Locación</option>
+                            </select>
+                            <div class="invalid-feedback" id="tipoIndice-error">Seleccione un índice de ajuste</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="frecuenciaMeses" class="form-label">⏰ Frecuencia de Ajuste (meses)</label>
+                            <input type="number" name="frecuenciaMeses" class="form-control" id="frecuenciaMeses" min="1" value="6">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="observaciones" class="form-label">📋 Observaciones</label>
+                        <textarea name="observaciones" class="form-control" id="observaciones" rows="3" maxlength="1000" placeholder="Observaciones adicionales del contrato..."></textarea>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <button type="button" class="btn btn-secondary" onclick="anteriorTab('finanzas-tab')">
+                        <i class="fas fa-arrow-left me-1"></i>Anterior
+                    </button>
+                    <div>
+                        <button type="submit" class="btn btn-success px-4 me-2" onclick="return validarFormularioCompleto()">
+                            <i class="fas fa-save me-1"></i>
+                            <span th:text="${modo == 'crear' ? 'Guardar Contrato' : 'Actualizar Contrato'}">Guardar Contrato</span>
+                        </button>
+                        <a th:href="@{/contratos/lista}" class="btn btn-secondary px-4">
+                            <i class="fas fa-times me-1"></i>Cancelar
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // Variables globales
+    let garanteCount = 1;
+    let habitanteCount = 1;
+    let temporalidadContrato = 'nuevo';
+
+    // ===== FUNCIONES PARA TEMPORALIDAD =====
+    function seleccionarTemporalidad(tipo) {
+        temporalidadContrato = tipo;
+
+        // Actualizar selección visual
+        document.querySelectorAll('.tipo-temporalidad-option').forEach(option => {
+            option.classList.remove('selected');
+        });
+
+        const optionSeleccionada = document.querySelector(`.tipo-temporalidad-option:nth-child(${tipo === 'nuevo' ? 1 : 2})`);
+        if (optionSeleccionada) {
+            optionSeleccionada.classList.add('selected');
+        }
+
+        // Actualizar radio button
+        document.getElementById(`temporalidad${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`).checked = true;
+
+        // Actualizar campo oculto
+        document.getElementById('esContratoExistente').value = (tipo === 'existente').toString();
+
+        // Mostrar/ocultar campos según tipo
+        actualizarCamposPorTemporalidad();
+    }
+
+    function actualizarCamposPorTemporalidad() {
+        const camposNuevo = document.getElementById('camposContratoNuevo');
+        const camposExistente = document.getElementById('camposContratoExistente');
+
+        if (temporalidadContrato === 'nuevo') {
+            camposNuevo.style.display = 'block';
+            camposExistente.style.display = 'none';
+
+            // Establecer valores por defecto para contrato nuevo
+            const hoy = new Date().toISOString().split('T')[0];
+            const unAnioDespues = new Date();
+            unAnioDespues.setFullYear(unAnioDespues.getFullYear() + 1);
+            const fechaFin = unAnioDespues.toISOString().split('T')[0];
+
+            document.getElementById('fechaInicio').value = hoy;
+            document.getElementById('fechaFin').value = fechaFin;
+            document.getElementById('montoMensual').value = '50000';
+
+            document.getElementById('esContratoExistente').value = 'false';
+
+        } else {
+            camposNuevo.style.display = 'none';
+            camposExistente.style.display = 'block';
+
+            // Establecer valores por defecto para contrato existente
+            const hoy = new Date().toISOString().split('T')[0];
+            const unMesAtras = new Date();
+            unMesAtras.setMonth(unMesAtras.getMonth() - 1);
+            const fechaMesAtras = unMesAtras.toISOString().split('T')[0];
+
+            document.getElementById('fechaInicioAdministracion').value = hoy;
+            document.getElementById('fechaInicioOriginal').value = fechaMesAtras;
+
+            // Establecer fecha fin por defecto (1 año desde la administración)
+            const unAnioDesdeAdmin = new Date();
+            unAnioDesdeAdmin.setFullYear(unAnioDesdeAdmin.getFullYear() + 1);
+            document.getElementById('fechaFinExistente').value = unAnioDesdeAdmin.toISOString().split('T')[0];
+
+            // ⭐⭐ CORRECCIÓN CRÍTICA: Llenar también los montos para contrato existente
+            document.getElementById('montoInicial').value = '50000';
+            document.getElementById('montoMensualExistente').value = '45000';
+
+            document.getElementById('esContratoExistente').value = 'true';
+        }
+    }
+
+    // ===== FUNCIONES BÁSICAS =====
+    function seleccionarModelo(numeroModelo) {
+        console.log('Seleccionando modelo:', numeroModelo);
+
+        // Remover selección anterior
+        document.querySelectorAll('.model-option').forEach(option => {
+            option.classList.remove('selected');
+        });
+
+        // Marcar como seleccionado
+        const option = document.querySelector(`.model-option:nth-child(${numeroModelo})`);
+        if (option) {
+            option.classList.add('selected');
+        }
+
+        // Marcar el radio button
+        const radio = document.getElementById(`modelo${numeroModelo}`);
+        if (radio) {
+            radio.checked = true;
+        }
+
+        // Si es modelo 4 (cochera), mostrar sección de vehículo
+        if (numeroModelo === 4) {
+            document.getElementById('seccionVehiculo').style.display = 'block';
+        } else {
+            document.getElementById('seccionVehiculo').style.display = 'none';
+        }
+    }
+
+    function actualizarPropiedadId() {
+        const propiedadSelect = document.getElementById('propiedad');
+        const propiedadIdInput = document.getElementById('propiedadId');
+
+        if (propiedadSelect && propiedadIdInput) {
+            if (propiedadSelect.value) {
+                propiedadIdInput.value = propiedadSelect.value;
+            }
+        }
+    }
+
+    function actualizarTipoPropiedad() {
+        const propiedadSelect = document.getElementById('propiedad');
+        const seccionVehiculo = document.getElementById('seccionVehiculo');
+
+        if (propiedadSelect && seccionVehiculo) {
+            const selectedOption = propiedadSelect.options[propiedadSelect.selectedIndex];
+            const tipoPropiedad = selectedOption.getAttribute('data-tipo');
+
+            if (tipoPropiedad && tipoPropiedad.toLowerCase().includes('cochera')) {
+                seccionVehiculo.style.display = 'block';
+            } else {
+                seccionVehiculo.style.display = 'none';
+            }
+        }
+    }
+
+    // ===== FUNCIONES DE NAVEGACIÓN SIMPLIFICADAS =====
+    function siguienteTab(tabId) {
+        console.log('Navegando a:', tabId);
+
+        // Navegar directamente sin validación
+        const nextTab = new bootstrap.Tab(document.getElementById(tabId));
+        nextTab.show();
+        actualizarProgreso(tabId);
+        return true;
+    }
+
+    function anteriorTab(tabId) {
+        console.log('Navegando a pestaña anterior:', tabId);
+
+        // Siempre permitir retroceder
+        const prevTab = new bootstrap.Tab(document.getElementById(tabId));
+        prevTab.show();
+        actualizarProgreso(tabId);
+    }
+
+    // ===== FUNCIÓN VALIDAR FORMULARIO COMPLETO - SOLO PARA ENVÍO =====
+    function validarFormularioCompleto() {
+        console.log("🔍 Validación COMPLETA para envío - Tipo:", temporalidadContrato);
+
+        let esValido = true;
+
+        // Limpiar errores
+        document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid', 'field-error'));
+        document.querySelectorAll('.invalid-feedback').forEach(el => el.style.display = 'none');
+
+        // Validar solo lo esencial
+        if (!document.querySelector('input[name="modeloContrato"]:checked')) {
+            mostrarError('modelo-error', 'Debe seleccionar un modelo de contrato');
+            esValido = false;
+        }
+
+        // ⭐⭐ CORRECCIÓN: Validar según tipo de contrato correctamente
+        if (temporalidadContrato === 'existente') {
+            console.log("Validando contrato EXISTENTE");
+            const camposExistente = ['fechaInicioOriginal', 'fechaInicioAdministracion', 'fechaFinExistente', 'montoInicial'];
+            camposExistente.forEach(id => {
+                const campo = document.getElementById(id);
+                if (!campo || !campo.value) {
+                    mostrarError(id + '-error', 'Campo requerido para contrato existente');
+                    esValido = false;
+                    console.log("Campo faltante:", id);
+                }
+            });
+        } else {
+            console.log("Validando contrato NUEVO");
+            const camposNuevo = ['fechaInicio', 'fechaFin', 'montoMensual'];
+            camposNuevo.forEach(id => {
+                const campo = document.getElementById(id);
+                if (!campo || !campo.value) {
+                    mostrarError(id + '-error', 'Campo requerido para contrato nuevo');
+                    esValido = false;
+                    console.log("Campo faltante:", id);
+                }
+            });
+        }
+
+        // Validar campos comunes críticos
+        const camposComunes = ['propiedad', 'locadorId', 'locatarioId', 'solicitanteId', 'diaVencimiento', 'tipoIndice'];
+        camposComunes.forEach(id => {
+            const campo = document.getElementById(id);
+            if (!campo || !campo.value) {
+                mostrarError(id + '-error', 'Campo requerido');
+                esValido = false;
+                console.log("Campo común faltante:", id);
+            }
+        });
+
+        if (!esValido) {
+            mostrarErrorGeneral('Complete todos los campos obligatorios marcados en rojo');
+            // Navegar a la primera pestaña
+            document.querySelector('[data-bs-target="#modelo"]').click();
+            return false;
+        }
+
+        console.log("✅ Formulario válido, enviando...");
+        return true;
+    }
+
+    function mostrarError(elementId, mensaje) {
+        const errorElement = document.getElementById(elementId);
+        if (errorElement) {
+            errorElement.textContent = mensaje;
+            errorElement.style.display = 'block';
+
+            // Encontrar el campo correspondiente y marcarlo como error
+            const campoId = elementId.replace('-error', '');
+            const campo = document.getElementById(campoId);
+            if (campo) {
+                campo.classList.add('is-invalid', 'field-error');
+            }
+        }
+    }
+
+    function mostrarErrorGeneral(mensaje) {
+        const errorDiv = document.getElementById('error-message');
+        const errorText = document.getElementById('error-text');
+        errorText.textContent = mensaje;
+        errorDiv.style.display = 'block';
+        errorDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    // Actualizar barra de progreso
+    function actualizarProgreso(tabId) {
+        const progresos = {
+            'modelo-tab': 20,
+            'basico-tab': 40,
+            'partes-tab': 60,
+            'finanzas-tab': 80,
+            'servicios-tab': 100
+        };
+
+        // Actualizar barra
+        const progressBar = document.getElementById('progress-bar');
+        if (progressBar) {
+            progressBar.style.width = progresos[tabId] + '%';
+        }
+
+        // Actualizar steps
+        const steps = {
+            'modelo-tab': 1,
+            'basico-tab': 2,
+            'partes-tab': 3,
+            'finanzas-tab': 4,
+            'servicios-tab': 5
+        };
+
+        const stepActual = steps[tabId];
+        document.querySelectorAll('.step').forEach((step, index) => {
+            step.classList.remove('active', 'completed');
+            if (index + 1 === stepActual) {
+                step.classList.add('active');
+            } else if (index + 1 < stepActual) {
+                step.classList.add('completed');
+            }
+        });
+    }
+
+    // Funciones para garantes y habitantes
+    function agregarGarante() {
+        const container = document.getElementById('garantes-container');
+        if (!container) return;
+
+        const firstGarante = container.querySelector('.participant-item');
+        if (!firstGarante) return;
+
+        const newGarante = firstGarante.cloneNode(true);
+        const select = newGarante.querySelector('select');
+        if (select) select.value = '';
+
+        container.appendChild(newGarante);
+    }
+
+    function removerGarante(button) {
+        const container = document.getElementById('garantes-container');
+        const items = container.querySelectorAll('.participant-item');
+        if (items.length > 1) {
+            button.closest('.participant-item').remove();
+        } else {
+            alert('No se puede remover el último garante');
+        }
+    }
+
+    function agregarHabitante() {
+        const container = document.getElementById('habitantes-container');
+        if (!container) return;
+
+        const firstHabitante = container.querySelector('.participant-item');
+        if (!firstHabitante) return;
+
+        const newHabitante = firstHabitante.cloneNode(true);
+        const select = newHabitante.querySelector('select');
+        if (select) select.value = '';
+
+        container.appendChild(newHabitante);
+    }
+
+    function removerHabitante(button) {
+        const container = document.getElementById('habitantes-container');
+        const items = container.querySelectorAll('.participant-item');
+        if (items.length > 1) {
+            button.closest('.participant-item').remove();
+        } else {
+            alert('No se puede remover el último habitante');
+        }
+    }
+
+    // Inicialización
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('DOM cargado, inicializando formulario...');
+
+        // Establecer temporalidad por defecto
+        seleccionarTemporalidad('nuevo');
+
+        actualizarProgreso('modelo-tab');
+        actualizarPropiedadId();
+        actualizarTipoPropiedad();
+
+        console.log('Formulario inicializado correctamente');
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Cuotas de Octubre - DC Inmobiliaria</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #1e1e1e;
+            color: white;
+            font-family: 'Segoe UI', sans-serif;
+            padding-top: 20px;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background-color: #2c2c2c;
+            padding: 30px;
+            border-radius: 12px;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #f5f5f5;
+            border-bottom: 2px solid #a75858;
+            padding-bottom: 10px;
+        }
+        .table-container {
+            background-color: #363636;
+            border-radius: 8px;
+            overflow: hidden;
+            overflow-x: auto;
+        }
+        .table {
+            margin-bottom: 0;
+            color: white;
+            min-width: 1200px;
+        }
+        .table thead th {
+            background-color: #a75858;
+            border: none;
+            color: white;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        .table tbody tr {
+            background-color: #3b3b3b;
+        }
+        .table tbody tr:hover {
+            background-color: #4a4a4a;
+        }
+        .table tbody td {
+            border-color: #5a5a5a;
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+        .btn-primary {
+            background-color: #a75858;
+            border: none;
+            min-width: 100px;
+        }
+        .btn-primary:hover {
+            background-color: #d07a7a;
+        }
+        .btn-success {
+            background-color: #28a745;
+            border: none;
+        }
+        .btn-success:hover {
+            background-color: #218838;
+        }
+        .badge {
+            font-size: 0.8em;
+        }
+        .modal-content {
+            background-color: #2c2c2c;
+            color: white;
+        }
+        .modal-header {
+            border-bottom: 1px solid #a75858;
+        }
+        .modal-footer {
+            border-top: 1px solid #a75858;
+        }
+        .form-control, .form-select {
+            background-color: #3b3b3b;
+            border: 1px solid #a75858;
+            color: white;
+        }
+        .form-control:focus, .form-select:focus {
+            background-color: #4a4a4a;
+            border-color: #d07a7a;
+            box-shadow: 0 0 8px rgba(208, 122, 122, 0.7);
+            color: white;
+        }
+        .descuento-item {
+            background-color: #363636;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .factura-container {
+            background-color: white;
+            color: black;
+            padding: 30px;
+            border-radius: 8px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .factura-header {
+            text-align: center;
+            border-bottom: 2px solid #a75858;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+        }
+        .factura-totales {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        .actions-column {
+            position: sticky;
+            right: 0;
+            background-color: #3b3b3b;
+            z-index: 10;
+        }
+        .table tbody tr:hover .actions-column {
+            background-color: #4a4a4a;
+        }
+        .alert {
+            border-radius: 8px;
+            border: none;
+        }
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2><i class="fas fa-file-invoice-dollar me-2"></i>Cuotas a Cobrar - Octubre 2023</h2>
+
+    <!-- Alertas -->
+    <div id="alertContainer"></div>
+
+    <!-- Tabla de cuotas -->
+    <div class="table-container">
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>LOCATARIO</th>
+                <th>PAGO DE ALQUILER</th>
+                <th>FECHA DE VENCIMIENTO</th>
+                <th>ABONO</th>
+                <th>SEGURO</th>
+                <th>FECHA DE AUMENTO</th>
+                <th>TIPO DE AJUSTE</th>
+                <th>TIEMPO DE AJUSTE</th>
+                <th>TIPO DE INMUEBLE</th>
+                <th>INFORMACION EXTRA</th>
+                <th class="actions-column">ACCIONES</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>giannapilar42@gmail.com</td>
+                <td>$255,612.00</td>
+                <td>Del 1 al 10</td>
+                <td><span class="badge bg-warning text-dark">PENDIENTE</span></td>
+                <td><span class="badge bg-success">SI</span></td>
+                <td>16/12/2025</td>
+                <td>ICL</td>
+                <td>3 meses</td>
+                <td>casa</td>
+                <td>sacar online</td>
+                <td class="actions-column">
+                    <button class="btn btn-primary btn-sm" onclick="abrirModalPago('giannapilar42@gmail.com', 255612)">
+                        <i class="fas fa-money-bill-wave me-1"></i>Abonar
+                    </button>
+                </td>
+            </tr>
+            <tr>
+                <td>mairagini5@gmail.com</td>
+                <td>$347,841.00</td>
+                <td>Del 1 al 10</td>
+                <td><span class="badge bg-warning text-dark">PENDIENTE</span></td>
+                <td><span class="badge bg-success">SI</span></td>
+                <td>16/12/2025</td>
+                <td>ICL</td>
+                <td>3 meses</td>
+                <td>casa</td>
+                <td>Sacar online</td>
+                <td class="actions-column">
+                    <button class="btn btn-primary btn-sm" onclick="abrirModalPago('mairagini5@gmail.com', 347841)">
+                        <i class="fas fa-money-bill-wave me-1"></i>Abonar
+                    </button>
+                </td>
+            </tr>
+            <tr>
+                <td>valee.romero.18.07@gmail.com</td>
+                <td>$280,000.00</td>
+                <td>Del 1 al 5</td>
+                <td><span class="badge bg-warning text-dark">PENDIENTE</span></td>
+                <td><span class="badge bg-danger">NO</span></td>
+                <td>16/10/25</td>
+                <td>ICL</td>
+                <td>4 meses</td>
+                <td>casa</td>
+                <td></td>
+                <td class="actions-column">
+                    <button class="btn btn-primary btn-sm" onclick="abrirModalPago('valee.romero.18.07@gmail.com', 280000)">
+                        <i class="fas fa-money-bill-wave me-1"></i>Abonar
+                    </button>
+                </td>
+            </tr>
+            <tr>
+                <td>alaanjoel22@gmail.com</td>
+                <td>$421,010.00</td>
+                <td>Del 1 al 5</td>
+                <td><span class="badge bg-warning text-dark">PENDIENTE</span></td>
+                <td><span class="badge bg-success">SI</span></td>
+                <td>16/12/2025</td>
+                <td>ICL</td>
+                <td>4 meses</td>
+                <td>Casa</td>
+                <td>Pedir comprobante</td>
+                <td class="actions-column">
+                    <button class="btn btn-primary btn-sm" onclick="abrirModalPago('alaanjoel22@gmail.com', 421010)">
+                        <i class="fas fa-money-bill-wave me-1"></i>Abonar
+                    </button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal de Pago -->
+<div class="modal fade" id="modalPago" tabindex="-1" aria-labelledby="modalPagoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalPagoLabel">Registrar Pago</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">Locatario:</label>
+                    <input type="text" class="form-control" id="locatarioNombre" readonly>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Cuota Original:</label>
+                    <input type="text" class="form-control" id="cuotaOriginal" readonly>
+                </div>
+
+                <!-- Descuentos -->
+                <div class="mb-3">
+                    <label class="form-label">Descuentos/Arreglos:</label>
+                    <div id="descuentosContainer">
+                        <!-- Los descuentos se agregarán aquí dinámicamente -->
+                    </div>
+                    <button type="button" class="btn btn-outline-primary btn-sm mt-2" onclick="agregarDescuento()">
+                        <i class="fas fa-plus me-1"></i>Agregar Descuento
+                    </button>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Total a Pagar:</label>
+                    <input type="text" class="form-control" id="totalPagar" readonly>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Método de Pago:</label>
+                    <select class="form-select" id="metodoPago">
+                        <option value="transferencia">Transferencia</option>
+                        <option value="efectivo">Efectivo</option>
+                    </select>
+                </div>
+
+                <!-- Distribución de fondos -->
+                <div class="mb-3">
+                    <label class="form-label">Distribución de Fondos:</label>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-control bg-dark text-white">
+                                <strong>Corredor (10%):</strong> <span id="montoCorredor">$0.00</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-control bg-dark text-white">
+                                <strong>Locador (90%):</strong> <span id="montoLocador">$0.00</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-success" onclick="procesarPago()">
+                    <i class="fas fa-file-invoice me-1"></i>Generar Factura
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Factura -->
+<div class="modal fade" id="modalFactura" tabindex="-1" aria-labelledby="modalFacturaLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalFacturaLabel">Factura - DC Inmobiliaria</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="facturaContent" class="factura-container">
+                    <!-- La factura se generará aquí -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" onclick="imprimirFactura()">
+                    <i class="fas fa-print me-1"></i>Imprimir
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Variables globales
+    let cuotaActual = 0;
+    let descuentos = [];
+    let locatarioActual = '';
+
+    // Función para mostrar alertas
+    function mostrarAlerta(mensaje, tipo = 'success') {
+        const alertContainer = document.getElementById('alertContainer');
+        const alertHTML = `
+            <div class="alert alert-${tipo} alert-dismissible fade show" role="alert">
+                <i class="fas fa-${tipo === 'success' ? 'check' : 'exclamation-triangle'} me-2"></i>
+                ${mensaje}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        `;
+        alertContainer.innerHTML = alertHTML;
+
+        // Auto-eliminar después de 5 segundos
+        setTimeout(() => {
+            const alert = document.querySelector('.alert');
+            if (alert) {
+                alert.remove();
+            }
+        }, 5000);
+    }
+
+    // Función para abrir el modal de pago
+    function abrirModalPago(locatario, cuota) {
+        locatarioActual = locatario;
+        cuotaActual = cuota;
+        descuentos = [];
+
+        document.getElementById('locatarioNombre').value = locatario;
+        document.getElementById('cuotaOriginal').value = '$' + cuota.toLocaleString('es-AR');
+        document.getElementById('totalPagar').value = '$' + cuota.toLocaleString('es-AR');
+
+        // Limpiar descuentos
+        document.getElementById('descuentosContainer').innerHTML = '';
+
+        // Calcular distribución inicial
+        calcularDistribucion();
+
+        // Mostrar modal
+        const modalPago = new bootstrap.Modal(document.getElementById('modalPago'));
+        modalPago.show();
+    }
+
+    // Función para agregar descuento
+    function agregarDescuento() {
+        const descuentoId = 'descuento_' + Date.now();
+        const descuentoHTML = `
+            <div class="descuento-item" id="${descuentoId}">
+                <div class="row">
+                    <div class="col-md-6">
+                        <label class="form-label">Concepto:</label>
+                        <input type="text" class="form-control descuento-concepto" placeholder="Ej: Reparación baño">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Monto:</label>
+                        <input type="number" class="form-control descuento-monto" placeholder="0" min="0" max="${cuotaActual}" onchange="actualizarTotal()">
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="button" class="btn btn-outline-danger btn-sm" onclick="eliminarDescuento('${descuentoId}')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document.getElementById('descuentosContainer').insertAdjacentHTML('beforeend', descuentoHTML);
+    }
+
+    // Función para eliminar descuento
+    function eliminarDescuento(id) {
+        document.getElementById(id).remove();
+        actualizarTotal();
+    }
+
+    // Función para actualizar el total a pagar
+    function actualizarTotal() {
+        let totalDescuentos = 0;
+
+        // Calcular total de descuentos
+        const inputsMonto = document.querySelectorAll('.descuento-monto');
+        inputsMonto.forEach(input => {
+            const monto = parseFloat(input.value) || 0;
+            totalDescuentos += monto;
+        });
+
+        // Calcular total a pagar
+        const totalPagar = cuotaActual - totalDescuentos;
+
+        // Validar que no sea negativo
+        if (totalPagar < 0) {
+            document.getElementById('totalPagar').value = '$0.00';
+            mostrarAlerta('El total no puede ser negativo. Revise los descuentos.', 'danger');
+        } else {
+            document.getElementById('totalPagar').value = '$' + totalPagar.toLocaleString('es-AR');
+        }
+
+        // Actualizar distribución
+        calcularDistribucion();
+    }
+
+    // Función para calcular la distribución de fondos
+    function calcularDistribucion() {
+        const totalPagar = parseFloat(document.getElementById('totalPagar').value.replace('$', '').replace(/\./g, '').replace(',', '.')) || cuotaActual;
+
+        // Calcular montos (10% corredor, 90% locador - siempre sobre la cuota original)
+        const montoCorredor = cuotaActual * 0.1;
+        const montoLocador = Math.max(0, totalPagar - montoCorredor); // No permitir negativo
+
+        document.getElementById('montoCorredor').textContent = '$' + montoCorredor.toLocaleString('es-AR');
+        document.getElementById('montoLocador').textContent = '$' + montoLocador.toLocaleString('es-AR');
+    }
+
+    // Función para procesar el pago (envía datos al backend REAL)
+    function procesarPago() {
+        const metodoPago = document.getElementById('metodoPago').value;
+        const totalPagar = parseFloat(document.getElementById('totalPagar').value.replace('$', '').replace(/\./g, '').replace(',', '.')) || cuotaActual;
+
+        // Validar que el total no sea negativo
+        if (totalPagar < 0) {
+            mostrarAlerta('El total a pagar no puede ser negativo. Revise los descuentos.', 'danger');
+            return;
+        }
+
+        // Recopilar información de descuentos
+        const descuentosInfo = [];
+        const conceptos = document.querySelectorAll('.descuento-concepto');
+        const montos = document.querySelectorAll('.descuento-monto');
+
+        for (let i = 0; i < conceptos.length; i++) {
+            if (conceptos[i].value && montos[i].value) {
+                descuentosInfo.push({
+                    concepto: conceptos[i].value,
+                    monto: parseFloat(montos[i].value) || 0
+                });
+            }
+        }
+
+        // Crear objeto para enviar al backend
+        const pagoData = {
+            locatario: locatarioActual,
+            cuotaOriginal: cuotaActual,
+            descuentos: descuentosInfo,
+            metodoPago: metodoPago,
+            totalPagar: totalPagar
+        };
+
+        // Mostrar loading
+        const boton = event.target;
+        const textoOriginal = boton.innerHTML;
+        boton.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Procesando...';
+        boton.disabled = true;
+
+        // Enviar datos al backend REAL
+        fetch('/cuotas/procesar-pago', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(pagoData)
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error en la respuesta del servidor: ' + response.status);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                mostrarFactura(pagoData, data.numeroFactura);
+                mostrarAlerta('Pago procesado correctamente', 'success');
+            } else {
+                mostrarAlerta('Error: ' + data.mensaje, 'danger');
+            }
+            boton.innerHTML = textoOriginal;
+            boton.disabled = false;
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            mostrarAlerta('Error al conectar con el servidor: ' + error.message, 'danger');
+            boton.innerHTML = textoOriginal;
+            boton.disabled = false;
+        });
+    }
+
+    // Función para mostrar la factura con los datos
+    function mostrarFactura(pagoData, numeroFactura) {
+        const montoCorredor = pagoData.cuotaOriginal * 0.1;
+        const montoLocador = pagoData.totalPagar - montoCorredor;
+
+        const facturaHTML = `
+            <div class="factura-header">
+                <h1>DC INMOBILIARIA</h1>
+                <p class="mb-0">Sistema de Gestión de Alquileres</p>
+                <p class="mb-0"><strong>Factura N°:</strong> ${numeroFactura}</p>
+                <p class="mb-0">Factura de Pago - Octubre 2023</p>
+                <p class="mb-0"><small>Fecha: ${new Date().toLocaleDateString('es-AR')} ${new Date().toLocaleTimeString('es-AR')}</small></p>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <h5>Información del Locatario</h5>
+                    <p><strong>Email:</strong> ${pagoData.locatario}</p>
+                    <p><strong>Fecha de Emisión:</strong> ${new Date().toLocaleDateString('es-AR')}</p>
+                </div>
+                <div class="col-md-6">
+                    <h5>Detalles del Pago</h5>
+                    <p><strong>Método de Pago:</strong> ${pagoData.metodoPago.charAt(0).toUpperCase() + pagoData.metodoPago.slice(1)}</p>
+                    <p><strong>Período:</strong> Octubre 2023</p>
+                    <p><strong>Estado:</strong> <span class="badge bg-success">PAGADO</span></p>
+                </div>
+            </div>
+
+            <table class="table table-bordered">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Concepto</th>
+                        <th>Monto</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Alquiler Mensual</td>
+                        <td>$${pagoData.cuotaOriginal.toLocaleString('es-AR')}</td>
+                    </tr>
+                    ${pagoData.descuentos && pagoData.descuentos.length > 0 ?
+                      pagoData.descuentos.map(descuento => `
+                        <tr>
+                            <td>Descuento: ${descuento.concepto}</td>
+                            <td>-$${descuento.monto.toLocaleString('es-AR')}</td>
+                        </tr>
+                    `).join('') : ''}
+                    <tr class="table-active">
+                        <td><strong>TOTAL A PAGAR</strong></td>
+                        <td><strong>$${pagoData.totalPagar.toLocaleString('es-AR')}</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="factura-totales">
+                <h5>Distribución de Fondos</h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Corredor (10% sobre cuota original):</strong> $${montoCorredor.toLocaleString('es-AR')}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Locador (90%):</strong> $${montoLocador.toLocaleString('es-AR')}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4 text-center">
+                <p class="mb-0">¡Gracias por su pago!</p>
+                <p class="mb-0">DC Inmobiliaria - Sistema de Gestión</p>
+                <p class="mb-0 text-muted"><small>Factura generada automáticamente</small></p>
+            </div>
+        `;
+
+        document.getElementById('facturaContent').innerHTML = facturaHTML;
+
+        // Cerrar modal de pago y abrir modal de factura
+        const modalPago = bootstrap.Modal.getInstance(document.getElementById('modalPago'));
+        modalPago.hide();
+
+        const modalFactura = new bootstrap.Modal(document.getElementById('modalFactura'));
+        modalFactura.show();
+
+        // Actualizar estado en la tabla principal
+        actualizarEstadoPago(locatarioActual);
+    }
+
+    // Función para actualizar el estado del pago en la tabla
+    function actualizarEstadoPago(locatario) {
+        // Buscar la fila correspondiente y actualizar el badge
+        const filas = document.querySelectorAll('tbody tr');
+        filas.forEach(fila => {
+            const email = fila.cells[0].textContent;
+            if (email === locatario) {
+                const badge = fila.cells[3].querySelector('.badge');
+                badge.className = 'badge bg-success';
+                badge.textContent = 'PAGADO';
+
+                // Deshabilitar el botón
+                const boton = fila.cells[10].querySelector('button');
+                boton.disabled = true;
+                boton.innerHTML = '<i class="fas fa-check me-1"></i>Pagado';
+                boton.className = 'btn btn-success btn-sm';
+            }
+        });
+    }
+
+    // Función para imprimir la factura
+    function imprimirFactura() {
+        const facturaContent = document.getElementById('facturaContent').innerHTML;
+        const ventanaImpresion = window.open('', '_blank');
+
+        ventanaImpresion.document.write(`
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>Factura - DC Inmobiliaria</title>
+                <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+                <style>
+                    body { padding: 20px; font-family: Arial, sans-serif; }
+                    .factura-container { max-width: 800px; margin: 0 auto; }
+                    @media print {
+                        body { padding: 0; margin: 0; }
+                        .factura-container { box-shadow: none; margin: 0; padding: 15px; }
+                        .btn { display: none; }
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="factura-container">
+                    ${facturaContent}
+                </div>
+            </body>
+            </html>
+        `);
+
+        ventanaImpresion.document.close();
+        ventanaImpresion.focus();
+
+        // Esperar a que cargue el contenido antes de imprimir
+        setTimeout(() => {
+            ventanaImpresion.print();
+        }, 500);
+    }
+
+    // Inicialización
+    document.addEventListener('DOMContentLoaded', function() {
+        // Configurar evento para el método de pago
+        document.getElementById('metodoPago').addEventListener('change', function() {
+            // Aquí podrías agregar lógica adicional si es necesario
+        });
+    });
+</script>
+</body>
+</html>

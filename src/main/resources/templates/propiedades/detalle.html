@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <title>Propiedades - Inmobiliaria DC</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <style>
+        body {
+            background-color: #1e1e1e;
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding-top: 20px;
+        }
+        .header-container {
+            background-color: #2c2c2c;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(167, 88, 88, 0.3);
+        }
+        .card {
+            background-color: #2c2c2c;
+            border: 1px solid #a75858;
+            border-radius: 10px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-bottom: 20px;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(167, 88, 88, 0.4);
+        }
+        .card-body {
+            padding: 20px;
+        }
+        .badge {
+            font-size: 0.8em;
+            padding: 5px 10px;
+            border-radius: 15px;
+        }
+        .btn-primary {
+            background-color: #a75858;
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: #d07a7a;
+        }
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 0.875rem;
+        }
+        .search-box {
+            background-color: #363636;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .stats-card {
+            background: linear-gradient(135deg, #a75858, #d07a7a);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        .property-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px 8px 0 0;
+        }
+        .no-image-placeholder {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #2c2c2c, #a75858);
+            border-radius: 8px 8px 0 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #b0b0b0;
+            font-size: 1.1em;
+            flex-direction: column;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .price-tag {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #a75858;
+        }
+        .feature-badge {
+            background-color: #363636;
+            color: #ddd;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            margin-right: 5px;
+            margin-bottom: 5px;
+            display: inline-block;
+            border: 1px solid rgba(167, 88, 88, 0.3);
+        }
+        .form-control, .form-select {
+            background-color: #3b3b3b;
+            border: 1px solid #a75858;
+            color: white;
+        }
+        .form-control:focus, .form-select:focus {
+            background-color: #4a4a4a;
+            border-color: #d07a7a;
+            color: white;
+            box-shadow: 0 0 8px rgba(208, 122, 122, 0.7);
+        }
+        .btn-outline-primary {
+            border-color: #a75858;
+            color: #a75858;
+        }
+        .btn-outline-primary:hover {
+            background-color: #a75858;
+            border-color: #a75858;
+        }
+        .btn-outline-warning {
+            border-color: #ffc107;
+            color: #ffc107;
+        }
+        .btn-outline-warning:hover {
+            background-color: #ffc107;
+            border-color: #ffc107;
+            color: #1e1e1e;
+        }
+        .btn-outline-danger {
+            border-color: #dc3545;
+            color: #dc3545;
+        }
+        .btn-outline-danger:hover {
+            background-color: #dc3545;
+            border-color: #dc3545;
+            color: white;
+        }
+        .btn-outline-secondary {
+            border-color: #6c757d;
+            color: #6c757d;
+        }
+        .btn-outline-secondary:hover {
+            background-color: #6c757d;
+            border-color: #6c757d;
+            color: white;
+        }
+        .btn-outline-success {
+            border-color: #198754;
+            color: #198754;
+        }
+        .btn-outline-success:hover {
+            background-color: #198754;
+            border-color: #198754;
+            color: white;
+        }
+        .btn-outline-info {
+            border-color: #0dcaf0;
+            color: #0dcaf0;
+        }
+        .btn-outline-info:hover {
+            background-color: #0dcaf0;
+            border-color: #0dcaf0;
+            color: #1e1e1e;
+        }
+        .border-top {
+            border-color: rgba(167, 88, 88, 0.2) !important;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Header con estadísticas -->
+    <div class="header-container">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h1><i class="fas fa-building"></i> Gestión de Propiedades</h1>
+                <p class="lead mb-0">Total: <span th:text="${totalPropiedades}">0</span> propiedades registradas</p>
+            </div>
+            <div class="col-md-6 text-end">
+                <a th:href="@{/propiedades/nuevo}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-plus"></i> Nueva Propiedad
+                </a>
+                <a th:href="@{/}" class="btn btn-secondary btn-lg">
+                    <i class="fas fa-home"></i> Inicio
+                </a>
+            </div>
+        </div>
+
+        <!-- Estadísticas rápidas -->
+        <div class="row mt-3">
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <i class="fas fa-home fa-2x"></i>
+                    <h4 th:text="${totalPropiedades}">0</h4>
+                    <p>Total Propiedades</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <i class="fas fa-key fa-2x"></i>
+                    <h4 th:text="${totalDisponibles}">0</h4>
+                    <p>Disponibles</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <i class="fas fa-handshake fa-2x"></i>
+                    <h4 th:text="${totalEnAlquiler}">0</h4>
+                    <p>En Alquiler</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <i class="fas fa-tag fa-2x"></i>
+                    <h4 th:text="${totalEnVenta}">0</h4>
+                    <p>En Venta</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Barra de búsqueda y filtros -->
+    <div class="search-box">
+        <form th:action="@{/propiedades/listar}" method="get" class="row g-3">
+            <div class="col-md-3">
+                <input type="text" name="criterio" class="form-control"
+                       th:value="${criterio}" placeholder="Buscar por título, dirección...">
+            </div>
+            <div class="col-md-2">
+                <select name="tipo" class="form-select">
+                    <option value="">Todos los tipos</option>
+                    <option value="Casa">Casa</option>
+                    <option value="Departamento">Departamento</option>
+                    <option value="Oficina">Oficina</option>
+                    <option value="Local">Local</option>
+                    <option value="Terreno">Terreno</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <select name="estado" class="form-select">
+                    <option value="">Todos los estados</option>
+                    <option value="Disponible">Disponible</option>
+                    <option value="En Negociación">En Negociación</option>
+                    <option value="Vendida">Vendida</option>
+                    <option value="Alquilada">Alquilada</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <div class="form-check">
+                    <input type="checkbox" name="enAlquiler" value="true" class="form-check-input" id="alquilerCheck">
+                    <label class="form-check-label" for="alquilerCheck">Solo en alquiler</label>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-search"></i> Buscar
+                </button>
+            </div>
+        </form>
+
+        <!-- Filtros rápidos -->
+        <div class="row mt-3">
+            <div class="col-12">
+                <div class="btn-group" role="group">
+                    <a th:href="@{/propiedades/listar}" class="btn btn-outline-secondary">Todas</a>
+                    <a th:href="@{/propiedades/disponibles-alquiler}" class="btn btn-outline-success">Disponibles Alquiler</a>
+                    <a th:href="@{/propiedades/disponibles-venta}" class="btn btn-outline-info">Disponibles Venta</a>
+                    <a th:href="@{/propiedades/listar?estado=Disponible}" class="btn btn-outline-warning">Solo Disponibles</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mensajes de alerta -->
+    <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fas fa-check-circle"></i> <span th:text="${success}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-triangle"></i> <span th:text="${error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <!-- Título especial si hay filtros -->
+    <div th:if="${tituloEspecial}" class="mb-3">
+        <h3 th:text="${tituloEspecial}"></h3>
+        <p th:text="'Se encontraron ' + ${totalResultados} + ' propiedades'"></p>
+    </div>
+
+    <!-- Lista de propiedades -->
+    <div th:if="${totalPropiedades == 0}" class="text-center py-5">
+        <i class="fas fa-building fa-5x text-muted mb-3"></i>
+        <h3>No hay propiedades registradas</h3>
+        <p class="text-muted">Comienza agregando tu primera propiedad</p>
+        <a th:href="@{/propiedades/nuevo}" class="btn btn-primary btn-lg">
+            <i class="fas fa-plus"></i> Agregar Primera Propiedad
+        </a>
+    </div>
+
+    <div th:if="${totalPropiedades > 0}" class="row">
+        <div th:each="propiedad : ${propiedades}" class="col-lg-6 col-xl-4">
+            <div class="card h-100">
+                <!-- Imagen de la propiedad - CORREGIDO -->
+                <div th:with="listaImagenes=${propiedad.getListaImagenes()}">
+                    <div th:if="${not listaImagenes.isEmpty()}">
+                        <img th:src="${listaImagenes[0]}"
+                             class="property-image"
+                             alt="Imagen de la propiedad"
+                             onerror="this.src='https://via.placeholder.com/400x200/2c2c2c/a75858?text=Imagen+No+Disponible'">
+                    </div>
+                    <div th:unless="${not listaImagenes.isEmpty()}">
+                        <div class="no-image-placeholder">
+                            <i class="fas fa-home fa-3x mb-2"></i>
+                            <div>Sin imagen</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <!-- Badges de estado - CORREGIDO -->
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <span class="badge"
+                              th:classappend="${propiedad.estado == 'Disponible'} ? 'bg-success' :
+                                            (${propiedad.estado == 'Alquilada'} ? 'bg-danger' :
+                                            (${propiedad.estado == 'Vendida'} ? 'bg-secondary' : 'bg-warning'))"
+                              th:text="${propiedad.estado}">
+                            Estado
+                        </span>
+                        <span class="badge bg-info" th:text="${propiedad.tipo}">Tipo</span>
+                    </div>
+
+                    <!-- Título y dirección -->
+                    <h5 class="card-title" th:text="${propiedad.titulo}">Título</h5>
+                    <p class="card-text text-muted">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span th:text="${propiedad.direccion + ', ' + propiedad.localidad}">Dirección</span>
+                    </p>
+
+                    <!-- Características principales -->
+                    <div class="mb-2">
+                        <small class="text-muted">
+                            <i class="fas fa-ruler-combined"></i>
+                            <span th:if="${propiedad.superficieTotal != null}"
+                                  th:text="${propiedad.superficieTotal + ' m²'}">m²</span>
+                            <span th:unless="${propiedad.superficieTotal != null}">- m²</span> |
+                            <i class="fas fa-door-open"></i>
+                            <span th:if="${propiedad.ambientes != null}"
+                                  th:text="${propiedad.ambientes + ' amb.'}">amb.</span>
+                            <span th:unless="${propiedad.ambientes != null}">- amb.</span> |
+                            <i class="fas fa-bed"></i>
+                            <span th:if="${propiedad.dormitorios != null}"
+                                  th:text="${propiedad.dormitorios}">dorm.</span>
+                            <span th:unless="${propiedad.dormitorios != null}">-</span>
+                        </small>
+                    </div>
+
+                    <!-- Precios -->
+                    <div class="mb-3">
+                        <div th:if="${propiedad.enAlquiler and propiedad.precioAlquiler != null}" class="price-tag">
+                            <i class="fas fa-handshake"></i> $<span th:text="${#numbers.formatDecimal(propiedad.precioAlquiler, 1, 2)}">0</span>/mes
+                        </div>
+                        <div th:if="${propiedad.enVenta and propiedad.precioVenta != null}" class="price-tag text-success">
+                            <i class="fas fa-tag"></i> $<span th:text="${#numbers.formatDecimal(propiedad.precioVenta, 1, 2)}">0</span>
+                        </div>
+                        <div th:if="${!propiedad.enAlquiler and !propiedad.enVenta}" class="text-muted">
+                            <small>Precio no especificado</small>
+                        </div>
+                    </div>
+
+                    <!-- Características destacadas -->
+                    <div class="mb-3">
+                        <div th:if="${propiedad.cochera}" class="feature-badge"><i class="fas fa-car"></i> Cochera</div>
+                        <div th:if="${propiedad.amoblado}" class="feature-badge"><i class="fas fa-couch"></i> Amoblado</div>
+                        <div th:if="${propiedad.pileta}" class="feature-badge"><i class="fas fa-swimming-pool"></i> Pileta</div>
+                        <div th:if="${propiedad.patio}" class="feature-badge"><i class="fas fa-tree"></i> Patio</div>
+                        <div th:if="${propiedad.jardin}" class="feature-badge"><i class="fas fa-leaf"></i> Jardín</div>
+                        <div th:if="${propiedad.terraza}" class="feature-badge"><i class="fas fa-umbrella-beach"></i> Terraza</div>
+                    </div>
+
+                    <!-- Botones de acción -->
+                    <div class="action-buttons">
+                        <a th:href="@{/propiedades/ver/{id}(id=${propiedad.id})}"
+                           class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-eye"></i> Ver
+                        </a>
+                        <a th:href="@{/propiedades/editar/{id}(id=${propiedad.id})}"
+                           class="btn btn-outline-warning btn-sm">
+                            <i class="fas fa-edit"></i> Editar
+                        </a>
+                        <a th:href="@{/propiedades/eliminar/{id}(id=${propiedad.id})}"
+                           class="btn btn-outline-danger btn-sm"
+                           onclick="return confirm('¿Está seguro de eliminar esta propiedad?')">
+                            <i class="fas fa-trash"></i> Eliminar
+                        </a>
+                    </div>
+
+                    <!-- Propietario - CORREGIDO -->
+                    <div class="mt-2 pt-2 border-top">
+                        <small class="text-muted">
+                            <i class="fas fa-user"></i> Propietario:
+                            <span th:if="${propiedad.propietario != null}"
+                                  th:text="${propiedad.propietario.nombre + ' ' + propiedad.propietario.apellido}">
+                                Propietario
+                            </span>
+                            <span th:unless="${propiedad.propietario != null}" class="text-warning">No asignado</span>
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Paginación (para futura implementación) -->
+    <div th:if="${totalPropiedades > 6}" class="row mt-4">
+        <div class="col-12 text-center">
+            <nav>
+                <ul class="pagination justify-content-center">
+                    <li class="page-item disabled"><a class="page-link" href="#">Anterior</a></li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#">Siguiente</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Auto-ocultar alertas después de 5 segundos
+    setTimeout(function() {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            const bsAlert = new bootstrap.Alert(alert);
+            bsAlert.close();
+        });
+    }, 5000);
+
+    // Manejo de errores en imágenes
+    document.addEventListener('DOMContentLoaded', function() {
+        const images = document.querySelectorAll('.property-image');
+        images.forEach(img => {
+            img.addEventListener('error', function() {
+                this.src = 'https://via.placeholder.com/400x200/2c2c2c/a75858?text=Imagen+No+Disponible';
+            });
+        });
+    });
+</script>
+</body>
+</html>

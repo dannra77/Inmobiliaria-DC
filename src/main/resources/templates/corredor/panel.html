@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel del Corredor - DC Inmobiliaria</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #1e1e1e;
+            color: white;
+            font-family: 'Segoe UI', sans-serif;
+            padding-top: 20px;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background-color: #2c2c2c;
+            padding: 30px;
+            border-radius: 12px;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #f5f5f5;
+            border-bottom: 2px solid #a75858;
+            padding-bottom: 10px;
+        }
+        .stats-card {
+            background: linear-gradient(135deg, #2c2c2c, #3b3b3b);
+            color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid #a75858;
+            transition: transform 0.2s;
+        }
+        .stats-card:hover {
+            transform: translateY(-2px);
+        }
+        .stats-number {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #d07a7a;
+        }
+        .stats-label {
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+        .stats-icon {
+            font-size: 1.5rem;
+            color: #a75858;
+            margin-bottom: 10px;
+        }
+        .table-container {
+            background-color: #363636;
+            border-radius: 8px;
+            overflow: hidden;
+            overflow-x: auto;
+        }
+        .table {
+            margin-bottom: 0;
+            color: white;
+        }
+        .table thead th {
+            background-color: #a75858;
+            border: none;
+            color: white;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        .table tbody tr {
+            background-color: #3b3b3b;
+            transition: background-color 0.2s;
+        }
+        .table tbody tr:hover {
+            background-color: #4a4a4a;
+        }
+        .table tbody td {
+            border-color: #5a5a5a;
+            vertical-align: middle;
+        }
+        .btn-primary {
+            background-color: #a75858;
+            border: none;
+            border-radius: 6px;
+        }
+        .btn-primary:hover {
+            background-color: #d07a7a;
+        }
+        .badge-estado {
+            font-size: 0.75rem;
+            padding: 4px 8px;
+        }
+        .alert {
+            border-radius: 8px;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2><i class="fas fa-chart-line me-2"></i>Panel del Corredor - Control de Ingresos</h2>
+
+    <!-- Alertas -->
+    <div id="alertContainer"></div>
+
+    <!-- Alertas Transferencias Pendientes -->
+    <div class="alert alert-warning alert-dismissible fade show" th:if="${transferenciasPendientesCount > 0}">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        <strong>Transferencias Pendientes de Verificación:</strong>
+        Tienes <span th:text="${transferenciasPendientesCount}">0</span> transferencias por confirmar en tu home banking.
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <!-- Estadísticas Rápidas -->
+    <div class="row">
+        <div class="col-md-3">
+            <div class="stats-card">
+                <div class="stats-icon"><i class="fas fa-money-bill-wave"></i></div>
+                <div class="stats-number" th:text="'$' + ${#numbers.formatDecimal(comisionesConfirmadas, 1, 2, 'COMMA')}">$0</div>
+                <div class="stats-label">Comisiones Confirmadas</div>
+                <small>Total del mes</small>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-card">
+                <div class="stats-icon"><i class="fas fa-university"></i></div>
+                <div class="stats-number" th:text="${transferenciasConfirmadas}">0</div>
+                <div class="stats-label">Transferencias</div>
+                <small>Confirmadas</small>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-card">
+                <div class="stats-icon"><i class="fas fa-money-bill"></i></div>
+                <div class="stats-number" th:text="${efectivoConfirmado}">0</div>
+                <div class="stats-label">Pagos Efectivo</div>
+                <small>Confirmados automáticamente</small>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-card">
+                <div class="stats-icon"><i class="fas fa-clock"></i></div>
+                <div class="stats-number" th:text="${transferenciasPendientesCount}">0</div>
+                <div class="stats-label">Pendientes</div>
+                <small>Por verificar</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECCIÓN TRANSFERENCIAS PENDIENTES -->
+    <div class="card mt-4">
+        <div class="card-header bg-warning text-dark">
+            <i class="fas fa-clock me-2"></i>Transferencias Pendientes de Verificación
+            <span class="badge bg-dark ms-2" th:text="${transferenciasPendientesCount}">0</span>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-container">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>FECHA PAGO</th>
+                        <th>LOCATARIO</th>
+                        <th>PROPIEDAD</th>
+                        <th>MONTO TOTAL</th>
+                        <th>COMISIÓN</th>
+                        <th>FACTURA</th>
+                        <th>ACCIONES</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="pago : ${transferenciasPendientes}">
+                        <td th:text="${#temporals.format(pago.fechaPago, 'dd/MM/yyyy')}">05/10/2023</td>
+                        <td th:text="${pago.cuota.contrato.locatario.nombreCompleto}">Juan Pérez</td>
+                        <td th:text="${pago.cuota.contrato.propiedad.direccion}">Av. Siempre Viva 123</td>
+                        <td><strong th:text="'$' + ${#numbers.formatDecimal(pago.monto, 1, 2, 'COMMA')}">$255,612.00</strong></td>
+                        <td th:text="'$' + ${#numbers.formatDecimal(pago.comisionCorredor, 1, 2, 'COMMA')}">$25,561.20</td>
+                        <td>
+                            <span class="badge bg-info badge-estado" th:text="${pago.numeroFactura}">FAC-123456</span>
+                        </td>
+                        <td>
+                            <button class="btn btn-success btn-sm" th:onclick="|confirmarTransferencia(${pago.id})|">
+                                <i class="fas fa-check me-1"></i>Confirmar
+                            </button>
+                            <button class="btn btn-danger btn-sm mt-1" th:onclick="|rechazarTransferencia(${pago.id})|">
+                                <i class="fas fa-times me-1"></i>Rechazar
+                            </button>
+                        </td>
+                    </tr>
+                    <tr th:if="${transferenciasPendientesCount == 0}">
+                        <td colspan="7" class="text-center text-muted py-4">
+                            <i class="fas fa-check-circle fa-2x mb-2 text-success"></i><br>
+                            No hay transferencias pendientes de verificación
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECCIÓN MOVIMIENTOS CONFIRMADOS -->
+    <div class="card mt-4">
+        <div class="card-header bg-success text-white">
+            <i class="fas fa-list me-2"></i>Movimientos Confirmados
+        </div>
+        <div class="card-body p-0">
+            <div class="table-container">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>FECHA</th>
+                        <th>DESCRIPCIÓN</th>
+                        <th>MÉTODO</th>
+                        <th>MONTO</th>
+                        <th>ESTADO</th>
+                        <th>COMPROBANTE</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="movimiento : ${movimientos}">
+                        <td th:text="${#temporals.format(movimiento.fecha, 'dd/MM/yyyy HH:mm')}">05/10/2023 14:30</td>
+                        <td th:text="${movimiento.descripcion}">Comisión por alquiler</td>
+                        <td>
+                                <span th:if="${movimiento.metodo.name() == 'TRANSFERENCIA'}" class="badge bg-primary badge-estado">
+                                    <i class="fas fa-university me-1"></i>Transferencia
+                                </span>
+                            <span th:if="${movimiento.metodo.name() == 'EFECTIVO'}" class="badge bg-warning text-dark badge-estado">
+                                    <i class="fas fa-money-bill me-1"></i>Efectivo
+                                </span>
+                        </td>
+                        <td><strong th:text="'$' + ${#numbers.formatDecimal(movimiento.monto, 1, 2, 'COMMA')}">$25,561.20</strong></td>
+                        <td>
+                                <span th:if="${movimiento.estado.name() == 'CONFIRMADO'}" class="badge bg-success badge-estado">
+                                    CONFIRMADO
+                                </span>
+                            <span th:if="${movimiento.estado.name() == 'PENDIENTE'}" class="badge bg-warning badge-estado">
+                                    PENDIENTE
+                                </span>
+                            <span th:if="${movimiento.estado.name() == 'CANCELADO'}" class="badge bg-danger badge-estado">
+                                    CANCELADO
+                                </span>
+                        </td>
+                        <td>
+                            <small th:text="${movimiento.comprobante}" class="text-muted" th:if="${movimiento.comprobante}">CBU-123456</small>
+                            <small class="text-muted" th:unless="${movimiento.comprobante}">-</small>
+                        </td>
+                    </tr>
+                    <tr th:if="${movimientos.empty}">
+                        <td colspan="6" class="text-center text-muted py-4">
+                            <i class="fas fa-inbox fa-2x mb-2"></i><br>
+                            No hay movimientos registrados
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- MODAL CONFIRMACIÓN TRANSFERENCIA -->
+<div class="modal fade" id="modalConfirmarTransferencia" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirmar Transferencia Recibida</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>¿Confirmas que has recibido esta transferencia en tu cuenta?</p>
+                <div class="alert alert-info">
+                    <strong>Verifica en tu home banking</strong> que el monto coincida antes de confirmar.
+                </div>
+                <div class="mt-3">
+                    <label class="form-label">Comprobante (opcional):</label>
+                    <input type="text" class="form-control" id="comprobanteConfirmacion" placeholder="Ej: CBU-123456789 o Nº de operación">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-success" onclick="procesarConfirmacion()">
+                    <i class="fas fa-check me-1"></i>Sí, confirmar recepción
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Variables globales
+    let pagoSeleccionado = null;
+
+    // Función para confirmar transferencia
+    function confirmarTransferencia(pagoId) {
+        pagoSeleccionado = pagoId;
+        new bootstrap.Modal(document.getElementById('modalConfirmarTransferencia')).show();
+    }
+
+    // Función para procesar confirmación
+    function procesarConfirmacion() {
+        const comprobante = document.getElementById('comprobanteConfirmacion').value;
+
+        fetch('/corredor/confirmar-transferencia', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `pagoId=${pagoSeleccionado}&comprobante=${encodeURIComponent(comprobante)}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                mostrarAlerta('✅ Transferencia confirmada correctamente', 'success');
+                bootstrap.Modal.getInstance(document.getElementById('modalConfirmarTransferencia')).hide();
+                // Recargar después de 2 segundos para ver cambios
+                setTimeout(() => location.reload(), 2000);
+            } else {
+                mostrarAlerta('❌ Error: ' + data.error, 'danger');
+            }
+        })
+        .catch(error => {
+            mostrarAlerta('❌ Error de conexión: ' + error.message, 'danger');
+        });
+    }
+
+    // Función para rechazar transferencia
+    function rechazarTransferencia(pagoId) {
+        const motivo = prompt('Ingrese el motivo del rechazo:');
+        if (motivo && motivo.trim() !== '') {
+            fetch('/corredor/rechazar-transferencia', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `pagoId=${pagoId}&motivo=${encodeURIComponent(motivo)}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    mostrarAlerta('⚠️ Transferencia rechazada', 'warning');
+                    location.reload();
+                } else {
+                    mostrarAlerta('❌ Error: ' + data.error, 'danger');
+                }
+            })
+            .catch(error => {
+                mostrarAlerta('❌ Error de conexión: ' + error.message, 'danger');
+            });
+        }
+    }
+
+    // Función para mostrar alertas
+    function mostrarAlerta(mensaje, tipo = 'success') {
+        const alertContainer = document.getElementById('alertContainer');
+        const alertHTML = `
+            <div class="alert alert-${tipo} alert-dismissible fade show" role="alert">
+                ${mensaje}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        `;
+        alertContainer.innerHTML = alertHTML;
+
+        // Auto-eliminar después de 5 segundos
+        setTimeout(() => {
+            const alert = document.querySelector('.alert');
+            if (alert) alert.remove();
+        }, 5000);
+    }
+
+    // Actualizar datos cada 30 segundos
+    setInterval(() => {
+        fetch('/corredor/datos-actualizados')
+            .then(response => response.json())
+            .then(data => {
+                console.log('Datos actualizados:', data);
+                // Aquí podrías actualizar solo las estadísticas sin recargar toda la página
+            });
+    }, 30000);
+</script>
+</body>
+</html>

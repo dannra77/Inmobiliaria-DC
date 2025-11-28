@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <title>Detalle Persona - Inmobiliaria DC</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <style>
+        body {
+            background-color: #1e1e1e;
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #2c2c2c;
+            padding: 30px;
+            border-radius: 12px;
+        }
+        .card {
+            background-color: #363636;
+            border: 1px solid #444;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .card-header {
+            background-color: #2c2c2c;
+            color: #d07a7a;
+            font-weight: 600;
+            border-bottom: 1px solid #444;
+            padding: 15px 20px;
+        }
+        .btn-primary {
+            background-color: #a75858;
+            border: none;
+            border-radius: 6px;
+        }
+        .btn-primary:hover {
+            background-color: #d07a7a;
+        }
+        .btn-info {
+            background-color: #17a2b8;
+            border: none;
+            border-radius: 6px;
+        }
+        .btn-warning {
+            background-color: #ffc107;
+            border: none;
+            border-radius: 6px;
+            color: #000;
+        }
+        h1 {
+            color: #f5f5f5;
+            border-bottom: 2px solid #a75858;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            padding: 20px;
+        }
+        .info-item {
+            padding: 10px;
+            border-left: 3px solid #a75858;
+            background-color: #3b3b3b;
+            border-radius: 5px;
+        }
+        .info-label {
+            font-weight: 600;
+            color: #a75858;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+        .info-value {
+            color: white;
+            font-size: 1rem;
+        }
+        .text-muted {
+            color: #888 !important;
+        }
+        .bank-highlight {
+            background: linear-gradient(135deg, #2c2c2c, #3b3b3b);
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+        .badge {
+            font-size: 0.75rem;
+            padding: 4px 8px;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        @media (max-width: 768px) {
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Header con botones de acción -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <a th:href="@{/personas/listar}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left me-1"></i> Volver a la lista
+            </a>
+        </div>
+        <div class="action-buttons">
+            <a th:href="@{/personas/editar/{id}(id=${persona.id})}" class="btn btn-warning">
+                <i class="fas fa-edit me-1"></i> Editar Persona
+            </a>
+            <a th:href="@{/}" class="btn btn-info">
+                <i class="fas fa-home me-1"></i> Ir al Inicio
+            </a>
+        </div>
+    </div>
+
+    <!-- Mensajes -->
+    <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fas fa-check-circle me-2"></i>
+        <span th:text="${success}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <div th:if="${persona}">
+        <h1>
+            <i class="fas fa-user me-2"></i>
+            Detalle de Persona: <span th:text="${persona.nombreCompleto}"></span>
+        </h1>
+
+        <!-- Información Básica -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-id-card me-2"></i>Información Personal</h5>
+            </div>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Nombre Completo</div>
+                    <div class="info-value" th:text="${persona.nombreCompleto}"></div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">DNI</div>
+                    <div class="info-value" th:text="${persona.dni}"></div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">CUIT/CUIL</div>
+                    <div class="info-value" th:text="${persona.cuitCuil ?: 'No especificado'}"
+                         th:class="${persona.cuitCuil} ? '' : 'text-muted'"></div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Fecha de Nacimiento</div>
+                    <div class="info-value"
+                         th:text="${persona.fechaNacimiento ? #temporals.format(persona.fechaNacimiento, 'dd/MM/yyyy') : 'No especificada'}"
+                         th:class="${persona.fechaNacimiento} ? '' : 'text-muted'"></div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Edad</div>
+                    <div class="info-value" th:text="${persona.edad + ' años'}"></div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Nacionalidad</div>
+                    <div class="info-value" th:text="${persona.nacionalidad ?: 'No especificada'}"
+                         th:class="${persona.nacionalidad} ? '' : 'text-muted'"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Información de Contacto -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-address-book me-2"></i>Información de Contacto</h5>
+            </div>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Email</div>
+                    <div class="info-value" th:text="${persona.email ?: 'No especificado'}"
+                         th:class="${persona.email} ? '' : 'text-muted'"></div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Teléfono</div>
+                    <div class="info-value" th:text="${persona.telefono ?: 'No especificado'}"
+                         th:class="${persona.telefono} ? '' : 'text-muted'"></div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Dirección</div>
+                    <div class="info-value" th:text="${persona.direccion ?: 'No especificada'}"
+                         th:class="${persona.direccion} ? '' : 'text-muted'"></div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Localidad</div>
+                    <div class="info-value" th:text="${persona.localidad ?: 'No especificada'}"
+                         th:class="${persona.localidad} ? '' : 'text-muted'"></div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Provincia</div>
+                    <div class="info-value" th:text="${persona.provincia ?: 'No especificada'}"
+                         th:class="${persona.provincia} ? '' : 'text-muted'"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Información Bancaria -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-landmark me-2"></i>Información Bancaria</h5>
+            </div>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Caja de Ahorro</div>
+                    <div class="info-value" th:text="${persona.cajaAhorro ?: 'No especificada'}"
+                         th:class="${persona.cajaAhorro} ? 'text-success' : 'text-muted'"></div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Cuenta Corriente</div>
+                    <div class="info-value" th:text="${persona.numeroCuentaBancaria ?: 'No especificada'}"
+                         th:class="${persona.numeroCuentaBancaria} ? 'text-success' : 'text-muted'"></div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">CBU</div>
+                    <div class="info-value font-monospace" th:text="${persona.cbu ?: 'No especificado'}"
+                         th:class="${persona.cbu} ? 'text-info' : 'text-muted'"></div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Alias</div>
+                    <div class="info-value" th:text="${persona.alias ?: 'No especificado'}"
+                         th:class="${persona.alias} ? 'text-warning' : 'text-muted'"></div>
+                </div>
+            </div>
+
+            <!-- Resumen de información bancaria -->
+            <div th:if="${persona.cbu or persona.alias or persona.cajaAhorro}" class="bank-highlight">
+                <h6 class="text-success mb-2">
+                    <i class="fas fa-money-bill-wave me-1"></i>Información para Transferencias
+                </h6>
+                <div class="info-value">
+                    <span th:text="${persona.informacionBancariaCompleta}"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Información Laboral y Redes Sociales -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-briefcase me-2"></i>Información Laboral y Social</h5>
+            </div>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Profesión</div>
+                    <div class="info-value" th:text="${persona.profesion ?: 'No especificada'}"
+                         th:class="${persona.profesion} ? '' : 'text-muted'"></div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Lugar de Trabajo</div>
+                    <div class="info-value" th:text="${persona.lugarTrabajo ?: 'No especificado'}"
+                         th:class="${persona.lugarTrabajo} ? '' : 'text-muted'"></div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Facebook</div>
+                    <div class="info-value" th:text="${persona.facebook ?: 'No especificado'}"
+                         th:class="${persona.facebook} ? '' : 'text-muted'"></div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Instagram</div>
+                    <div class="info-value" th:text="${persona.instagram ?: 'No especificado'}"
+                         th:class="${persona.instagram} ? '' : 'text-muted'"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Información del Sistema -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-cogs me-2"></i>Información del Sistema</h5>
+            </div>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">ID de Persona</div>
+                    <div class="info-value" th:text="${persona.id}"></div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Fecha de Alta</div>
+                    <div class="info-value" th:text="${#temporals.format(persona.fechaAlta, 'dd/MM/yyyy')}"></div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Última Modificación</div>
+                    <div class="info-value" th:text="${#temporals.format(persona.fechaModificacion, 'dd/MM/yyyy')}"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Observaciones -->
+        <div th:if="${persona.observaciones}" class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-sticky-note me-2"></i>Observaciones</h5>
+            </div>
+            <div class="card-body">
+                <p class="mb-0" th:text="${persona.observaciones}"></p>
+            </div>
+        </div>
+
+        <!-- Botones de acción al final -->
+        <div class="d-flex justify-content-between mt-4">
+            <div class="action-buttons">
+                <a th:href="@{/personas/editar/{id}(id=${persona.id})}" class="btn btn-warning">
+                    <i class="fas fa-edit me-1"></i> Editar Persona
+                </a>
+                <a th:href="@{/personas/eliminar/{id}(id=${persona.id})}"
+                   class="btn btn-danger"
+                   onclick="return confirm('¿Está seguro de eliminar a ${persona.nombreCompleto}?')">
+                    <i class="fas fa-trash me-1"></i> Eliminar Persona
+                </a>
+            </div>
+            <div class="action-buttons">
+                <a th:href="@{/personas/listar}" class="btn btn-secondary">
+                    <i class="fas fa-list me-1"></i> Ver Todas las Personas
+                </a>
+                <a th:href="@{/}" class="btn btn-info">
+                    <i class="fas fa-home me-1"></i> Ir al Inicio
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mensaje si no se encuentra la persona -->
+    <div th:unless="${persona}" class="text-center py-5">
+        <i class="fas fa-user-slash fa-3x text-muted mb-3"></i>
+        <h3 class="text-muted">Persona no encontrada</h3>
+        <p class="text-muted">La persona que buscas no existe o ha sido eliminada.</p>
+        <a th:href="@{/personas/listar}" class="btn btn-primary">
+            <i class="fas fa-arrow-left me-1"></i> Volver a la lista
+        </a>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Auto-close alerts after 5 seconds
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(function() {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            });
+        }, 5000);
+    });
+
+    // Función para copiar información bancaria
+    function copiarAlPortapapeles(texto) {
+        navigator.clipboard.writeText(texto).then(function() {
+            alert('Texto copiado al portapapeles: ' + texto);
+        }, function(err) {
+            console.error('Error al copiar: ', err);
+        });
+    }
+</script>
+</body>
+</html>

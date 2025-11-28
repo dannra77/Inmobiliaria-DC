@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Prueba Emergencia</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #1e1e1e; color: white; font-family: 'Segoe UI'; padding-top: 20px; }
+        .form-container { max-width: 800px; margin: 0 auto; background-color: #2c2c2c; padding: 20px; border-radius: 12px; }
+        .form-control, .form-select { background-color: #3b3b3b; border: 1px solid #a75858; color: white; }
+        .btn-success { background-color: #28a745; border: none; }
+    </style>
+</head>
+<body>
+<div class="form-container">
+    <h2>🚀 Prueba de Guardado Simple</h2>
+    <p class="text-muted">Usá este formulario para probar si el guardado básico funciona</p>
+
+    <!-- Mostrar mensajes -->
+    <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fas fa-check-circle me-2"></i>
+        <span th:text="${success}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-circle me-2"></i>
+        <span th:text="${error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <form th:action="@{/contratos/guardar-simple}" method="post" class="mt-4">
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">🏠 Propiedad:</label>
+                <select name="propiedadId" class="form-select" required>
+                    <option value="">Seleccionar propiedad...</option>
+                    <option th:each="propiedad : ${propiedades}"
+                            th:value="${propiedad.id}"
+                            th:text="${propiedad.titulo + ' - ' + propiedad.direccion}">
+                    </option>
+                </select>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">💰 Monto Mensual:</label>
+                <input type="number" step="0.01" name="montoMensual" class="form-control" required placeholder="Ej: 50000.00">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label class="form-label">👤 Locador:</label>
+                <select name="locadorId" class="form-select" required>
+                    <option value="">Seleccionar locador...</option>
+                    <option th:each="persona : ${personas}"
+                            th:value="${persona.id}"
+                            th:text="${persona.nombreCompleto + ' - DNI: ' + persona.dni}">
+                    </option>
+                </select>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label class="form-label">👤 Locatario:</label>
+                <select name="locatarioId" class="form-select" required>
+                    <option value="">Seleccionar locatario...</option>
+                    <option th:each="persona : ${personas}"
+                            th:value="${persona.id}"
+                            th:text="${persona.nombreCompleto + ' - DNI: ' + persona.dni}">
+                    </option>
+                </select>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label class="form-label">📝 Solicitante:</label>
+                <select name="solicitanteId" class="form-select" required>
+                    <option value="">Seleccionar solicitante...</option>
+                    <option th:each="persona : ${personas}"
+                            th:value="${persona.id}"
+                            th:text="${persona.nombreCompleto + ' - DNI: ' + persona.dni}">
+                    </option>
+                </select>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-between mt-4">
+            <a th:href="@{/contratos/nuevo}" class="btn btn-secondary">
+                ← Volver al Form Completo
+            </a>
+            <button type="submit" class="btn btn-success px-4">
+                🚀 Guardar Simple
+            </button>
+        </div>
+    </form>
+
+    <div class="mt-4 p-3 bg-dark rounded">
+        <h6>💡 Cómo usar:</h6>
+        <ol class="small">
+            <li>Seleccioná una propiedad disponible</li>
+            <li>Ingresá el monto mensual</li>
+            <li>Seleccioná locador, locatario y solicitante (pueden ser la misma persona)</li>
+            <li>Hacé click en "Guardar Simple"</li>
+        </ol>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+</body>
+</html>
