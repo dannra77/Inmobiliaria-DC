@@ -1,17 +1,19 @@
+# Exported from Render on 2025-11-28T09:31:44Z
+version: "1"
 services:
   - type: web
-    name: inmobiliaria-dc-dannra77  # ← CORREGIDO: quité un "7" extra
+    name: nmobiliaria-dc-dannra77
+    runtime: docker
+    repo: https://github.com/dannra77/Inmobiliaria-DC
     plan: free
-    buildCommand: mvn clean package -DskipTests
-    startCommand: java -jar target/*.jar
-    healthCheckPath: /health
     envVars:
-      - key: DATABASE_URL
-        fromDatabase:
-          name: inmobiliaria-db-dannra77
-          property: connectionString
-
-databases:
-  - name: inmobiliaria-db-dannra77
-    plan: free
-    databaseName: inmobiliaria_dc
+      - key: SPRING_JPA_SHOW_SQL
+        sync: false
+      - key: JAVA_OPTS
+        sync: false
+      - key: SPRING_PROFILES_ACTIVE
+        sync: false
+    region: oregon
+    dockerContext: .
+    dockerfilePath: ./Dockerfile
+    autoDeployTrigger: commit
