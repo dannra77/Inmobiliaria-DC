@@ -1,13 +1,14 @@
 # Fase de construcción
-FROM eclipse-temurin:17-jdk-jammy AS builder
+FROM maven:3.8.6-openjdk-17 AS builder
 WORKDIR /workspace/app
 
-# Copiar archivos de construcción
+# Copiar solo los archivos necesarios para descargar dependencias
 COPY pom.xml .
-COPY src src
+RUN mvn dependency:go-offline
 
-# Compilar la aplicación
-RUN ./mvnw clean package -DskipTests
+# Copiar el código fuente y compilar
+COPY src src
+RUN mvn clean package -DskipTests
 
 # Fase de ejecución
 FROM eclipse-temurin:17-jdk-jammy
