@@ -1,18 +1,13 @@
 FROM eclipse-temurin:17-jdk-jammy
 WORKDIR /app
 
-# Copiar archivos de Maven primero
-COPY mvnw .
-COPY .mvn .mvn
-COPY pom.xml .
+# Copiar archivos del proyecto
+COPY . .
 
-# Copiar código fuente
-COPY src src
+# Instalar Maven y construir la aplicación
+RUN apt-get update && apt-get install -y maven
+RUN mvn clean package -DskipTests
 
-# Dar permisos y construir
-RUN chmod +x mvnw
-RUN ./mvnw clean package -DskipTests
-
-# Ejecutar
+# Exponer puerto y ejecutar
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "target/*.jar"]
