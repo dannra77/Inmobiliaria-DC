@@ -3,5 +3,11 @@ WORKDIR /app
 COPY pom.xml .
 RUN mvn dependency:go-offline -B
 COPY src ./src
-# Especificar codificación UTF-8
-RUN mvn clean package -DskipTests -Dproject.build.sourceEncoding=UTF-8
+RUN mvn clean package -DskipTests
+
+FROM eclipse-temurin:21-jre-alpine
+WORKDIR /app
+COPY --from=builder /app/target/*.jar app.jar
+
+# CRÍTICO: Esta línea ejecuta tu aplicación
+ENTRYPOINT ["java", "-jar", "app.jar"]
