@@ -1,8 +1,6 @@
 FROM maven:3.9.9-eclipse-temurin-21-alpine AS builder
 WORKDIR /app
 COPY pom.xml .
-# FORZAR descarga de todas las dependencias
-RUN mvn dependency:resolve dependency:resolve-plugins -B
 COPY src ./src
 RUN mvn clean package -DskipTests
 
