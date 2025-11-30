@@ -47,7 +47,7 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- ✅ POSTGRESQL (REEMPLAZA MYSQL) -->
+        <!-- ✅✅✅ POSTGRESQL (NO MYSQL) -->
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
