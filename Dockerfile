@@ -3,5 +3,5 @@ WORKDIR /app
 COPY pom.xml .
 RUN mvn dependency:go-offline -B
 COPY src ./src
-# Desactivar el filtrado de recursos
-RUN mvn clean package -DskipTests -Dmaven.resources.filtering=false
+# Especificar codificación UTF-8
+RUN mvn clean package -DskipTests -Dproject.build.sourceEncoding=UTF-8
