@@ -1,8 +1,0 @@
-[build]
-builder = "dockerfile"
-
-[deploy]
-startCommand = "java -jar app.jar"
-
-[env]
-JAVA_VERSION = "17"
