@@ -126,6 +126,9 @@
         .price-input-group input {
             padding-left: 25px;
         }
+        .optional-field {
+            opacity: 0.8;
+        }
     </style>
 </head>
 <body>
@@ -136,7 +139,7 @@
     <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
     <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
 
-    <form th:action="@{/propiedades/guardar}" th:object="${propiedad}" method="post" novalidate>
+    <form th:action="@{/propiedades/guardar}" th:object="${propiedad}" method="post" novalidate id="propiedadForm">
 
         <!-- ID oculto para edición -->
         <input type="hidden" th:field="*{id}" />
@@ -179,14 +182,14 @@
             <div class="mb-3">
                 <label for="titulo" class="form-label required">Título de la Propiedad</label>
                 <input type="text" id="titulo" th:field="*{titulo}" class="form-control"
-                       placeholder="Ej: Hermosa casa en zona céntrica" required maxlength="100" />
+                       placeholder="Ingrese el título de la propiedad" required maxlength="100" />
                 <div class="invalid-feedback">Por favor ingrese el título de la propiedad</div>
             </div>
 
-            <div class="mb-3">
+            <div class="mb-3 optional-field">
                 <label for="descripcion" class="form-label">Descripción</label>
                 <textarea id="descripcion" th:field="*{descripcion}" class="form-control" rows="4"
-                          placeholder="Describa las características principales de la propiedad..."
+                          placeholder="Sin descripción..."
                           maxlength="500"></textarea>
             </div>
         </div>
@@ -198,7 +201,7 @@
             <div class="mb-3">
                 <label for="direccion" class="form-label required">Dirección</label>
                 <input type="text" id="direccion" th:field="*{direccion}" class="form-control"
-                       placeholder="Calle, número, piso, departamento" required />
+                       placeholder="Ingrese la dirección" required />
                 <div class="invalid-feedback">Por favor ingrese la dirección</div>
             </div>
 
@@ -206,37 +209,37 @@
                 <div class="col-md-4 mb-3">
                     <label for="localidad" class="form-label required">Localidad</label>
                     <input type="text" id="localidad" th:field="*{localidad}" class="form-control"
-                           placeholder="Ej: Santa Fe" required />
+                           placeholder="Ingrese la localidad" required />
                     <div class="invalid-feedback">Por favor ingrese la localidad</div>
                 </div>
                 <div class="col-md-4 mb-3">
                     <label for="provincia" class="form-label required">Provincia</label>
                     <input type="text" id="provincia" th:field="*{provincia}" class="form-control"
-                           placeholder="Ej: Santa Fe" required />
+                           placeholder="Ingrese la provincia" required />
                     <div class="invalid-feedback">Por favor ingrese la provincia</div>
                 </div>
-                <div class="col-md-4 mb-3">
+                <div class="col-md-4 mb-3 optional-field">
                     <label for="codigoPostal" class="form-label">Código Postal</label>
                     <input type="text" id="codigoPostal" th:field="*{codigoPostal}" class="form-control"
-                           placeholder="Ej: 3000" maxlength="10" />
+                           placeholder="No especificado" maxlength="10" />
                 </div>
             </div>
 
             <div class="row">
-                <div class="col-md-6 mb-3">
+                <div class="col-md-6 mb-3 optional-field">
                     <label for="pais" class="form-label">País</label>
                     <input type="text" id="pais" th:field="*{pais}" class="form-control"
-                           value="Argentina" placeholder="Argentina" />
+                           placeholder="No especificado" />
                 </div>
-                <div class="col-md-3 mb-3">
+                <div class="col-md-3 mb-3 optional-field">
                     <label for="latitud" class="form-label">Latitud</label>
                     <input type="number" id="latitud" step="0.000001" th:field="*{latitud}"
-                           class="form-control" placeholder="-34.603722" />
+                           class="form-control" placeholder="No especificada" />
                 </div>
-                <div class="col-md-3 mb-3">
+                <div class="col-md-3 mb-3 optional-field">
                     <label for="longitud" class="form-label">Longitud</label>
                     <input type="number" id="longitud" step="0.000001" th:field="*{longitud}"
-                           class="form-control" placeholder="-58.381592" />
+                           class="form-control" placeholder="No especificada" />
                 </div>
             </div>
         </div>
@@ -246,38 +249,38 @@
             <h4 class="section-title">📐 Características Físicas</h4>
 
             <div class="row">
-                <div class="col-md-4 mb-3">
+                <div class="col-md-4 mb-3 optional-field">
                     <label for="superficieTotal" class="form-label">Superficie Total (m²)</label>
                     <input type="number" id="superficieTotal" step="0.01" min="0"
-                           th:field="*{superficieTotal}" class="form-control" placeholder="200.50" />
+                           th:field="*{superficieTotal}" class="form-control" placeholder="0" />
                 </div>
-                <div class="col-md-4 mb-3">
+                <div class="col-md-4 mb-3 optional-field">
                     <label for="superficieCubierta" class="form-label">Superficie Cubierta (m²)</label>
                     <input type="number" id="superficieCubierta" step="0.01" min="0"
-                           th:field="*{superficieCubierta}" class="form-control" placeholder="150.00" />
+                           th:field="*{superficieCubierta}" class="form-control" placeholder="0" />
                 </div>
-                <div class="col-md-4 mb-3">
+                <div class="col-md-4 mb-3 optional-field">
                     <label for="antiguedad" class="form-label">Antigüedad (años)</label>
                     <input type="number" id="antiguedad" min="0" th:field="*{antiguedad}"
-                           class="form-control" placeholder="10" />
+                           class="form-control" placeholder="0" />
                 </div>
             </div>
 
             <div class="row">
-                <div class="col-md-4 mb-3">
+                <div class="col-md-4 mb-3 optional-field">
                     <label for="ambientes" class="form-label">Ambientes</label>
                     <input type="number" id="ambientes" min="0" th:field="*{ambientes}"
-                           class="form-control" placeholder="3" />
+                           class="form-control" placeholder="0" />
                 </div>
-                <div class="col-md-4 mb-3">
+                <div class="col-md-4 mb-3 optional-field">
                     <label for="dormitorios" class="form-label">Dormitorios</label>
                     <input type="number" id="dormitorios" min="0" th:field="*{dormitorios}"
-                           class="form-control" placeholder="2" />
+                           class="form-control" placeholder="0" />
                 </div>
-                <div class="col-md-4 mb-3">
+                <div class="col-md-4 mb-3 optional-field">
                     <label for="banios" class="form-label">Baños</label>
                     <input type="number" id="banios" min="0" th:field="*{banios}"
-                           class="form-control" placeholder="1" />
+                           class="form-control" placeholder="0" />
                 </div>
             </div>
         </div>
@@ -318,18 +321,18 @@
             <h4 class="section-title">💰 Precios</h4>
 
             <div class="row">
-                <div class="col-md-6 mb-3">
+                <div class="col-md-6 mb-3 optional-field">
                     <label for="precioVenta" class="form-label">Precio de Venta</label>
                     <div class="price-input-group">
                         <input type="number" id="precioVenta" step="0.01" min="0"
-                               th:field="*{precioVenta}" class="form-control" placeholder="85000.00" />
+                               th:field="*{precioVenta}" class="form-control" placeholder="0.00" />
                     </div>
                 </div>
-                <div class="col-md-6 mb-3">
+                <div class="col-md-6 mb-3 optional-field">
                     <label for="precioAlquiler" class="form-label">Precio de Alquiler</label>
                     <div class="price-input-group">
                         <input type="number" id="precioAlquiler" step="0.01" min="0"
-                               th:field="*{precioAlquiler}" class="form-control" placeholder="280000.00" />
+                               th:field="*{precioAlquiler}" class="form-control" placeholder="0.00" />
                     </div>
                 </div>
             </div>
@@ -359,7 +362,7 @@
                 </div>
             </div>
 
-            <div class="mb-3">
+            <div class="mb-3 optional-field">
                 <label for="estado" class="form-label">Estado Actual</label>
                 <select id="estado" th:field="*{estado}" class="form-control">
                     <option value="">Seleccione estado</option>
@@ -377,16 +380,16 @@
         <div class="form-section">
             <h4 class="section-title">📝 Información Adicional</h4>
 
-            <div class="mb-3">
+            <div class="mb-3 optional-field">
                 <label for="observaciones" class="form-label">Observaciones</label>
                 <textarea id="observaciones" th:field="*{observaciones}" class="form-control" rows="3"
-                          placeholder="Observaciones adicionales sobre la propiedad..."></textarea>
+                          placeholder="Sin observaciones..."></textarea>
             </div>
 
-            <div class="mb-3">
+            <div class="mb-3 optional-field">
                 <label for="imagenes" class="form-label">Imágenes (URLs)</label>
                 <input type="text" id="imagenes" th:field="*{imagenes}" class="form-control"
-                       placeholder="https://ejemplo.com/imagen1.jpg, https://ejemplo.com/imagen2.jpg" />
+                       placeholder="No especificado" />
                 <small class="form-text text-muted">Separar múltiples URLs con comas</small>
             </div>
         </div>
@@ -406,50 +409,100 @@
 <!-- Validación JavaScript -->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const form = document.querySelector('form');
+        const form = document.getElementById('propiedadForm');
 
         form.addEventListener('submit', function(e) {
+            // Solo validar campos obligatorios
             let isValid = true;
-            const requiredFields = form.querySelectorAll('[required]');
+            const requiredFields = [
+                document.getElementById('tipo'),
+                document.getElementById('propietario'),
+                document.getElementById('titulo'),
+                document.getElementById('direccion'),
+                document.getElementById('localidad'),
+                document.getElementById('provincia')
+            ];
 
             // Remover clases de error previas
             requiredFields.forEach(field => {
-                field.classList.remove('is-invalid');
+                if (field) {
+                    field.classList.remove('is-invalid');
+                }
             });
 
             // Validar campos requeridos
             requiredFields.forEach(field => {
-                if (!field.value.trim()) {
+                if (field && !field.value.trim()) {
                     isValid = false;
                     field.classList.add('is-invalid');
                 }
             });
 
-            // Validar que al menos un tipo de operación esté seleccionado
-            const enVenta = document.getElementById('enVenta').checked;
-            const enAlquiler = document.getElementById('enAlquiler').checked;
-
-            if (!enVenta && !enAlquiler) {
-                alert('Debe seleccionar al menos una opción: En Venta o En Alquiler');
-                isValid = false;
-            }
-
             if (!isValid) {
                 e.preventDefault();
-                alert('Por favor, complete todos los campos obligatorios (*)');
+                alert('Por favor, complete los campos obligatorios marcados con *');
+                return;
             }
+
+            // Autocompletar campos vacíos antes de enviar
+            autocompletarCamposVacios();
         });
+
+        function autocompletarCamposVacios() {
+            const camposOpcionales = {
+                'descripcion': 'Sin descripción',
+                'codigoPostal': 'No especificado',
+                'pais': 'No especificado',
+                'observaciones': 'Sin observaciones',
+                'imagenes': 'No especificado',
+                'estado': 'Disponible'
+            };
+
+            // Autocompletar campos de texto
+            for (const [campoId, valorDefault] of Object.entries(camposOpcionales)) {
+                const campo = document.getElementById(campoId);
+                if (campo && !campo.value.trim()) {
+                    campo.value = valorDefault;
+                }
+            }
+
+            // Autocompletar campos numéricos con 0
+            const camposNumericos = [
+                'superficieTotal', 'superficieCubierta', 'antiguedad',
+                'ambientes', 'dormitorios', 'banios',
+                'precioVenta', 'precioAlquiler'
+            ];
+
+            camposNumericos.forEach(campoId => {
+                const campo = document.getElementById(campoId);
+                if (campo && (!campo.value || campo.value === '')) {
+                    campo.value = '0';
+                }
+            });
+
+            // Para latitud y longitud, si están vacíos no hacemos nada (pueden ser null)
+            const latitud = document.getElementById('latitud');
+            const longitud = document.getElementById('longitud');
+            if (latitud && !latitud.value) {
+                // No autocompletamos coordenadas
+            }
+            if (longitud && !longitud.value) {
+                // No autocompletamos coordenadas
+            }
+        }
 
         // Auto-formato para precios
         const precioVenta = document.getElementById('precioVenta');
         const precioAlquiler = document.getElementById('precioAlquiler');
 
         [precioVenta, precioAlquiler].forEach(input => {
-            input.addEventListener('blur', function() {
-                if (this.value) {
-                    this.value = parseFloat(this.value).toFixed(2);
-                }
-            });
+            if (input) {
+                input.addEventListener('blur', function() {
+                    if (this.value && this.value !== '0') {
+                        this.value = parseFloat(this.value).toFixed(2);
+                    }
+                });
+            }
         });
     });
 </script>
