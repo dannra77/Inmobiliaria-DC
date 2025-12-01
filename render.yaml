@@ -1,20 +1,18 @@
-services:
-  - type: web
-    name: inmobiliaria-dc-api
-    env: docker
-    dockerfilePath: ./Dockerfile
-    dockerContext: .
-    envVars:
-      - key: DATABASE_URL
-        value: jdbc:postgresql://dpg-d4kes924d50c73df8p0g-a.oregon-postgres.render.com:5432/inmobiliaria_dc
-      - key: DB_USERNAME
-        value: inmobiliaria_user
-      - key: DB_PASSWORD
-        value: p9Gl3NIYhwK4aRKP3Qbt2UECVFijxos3
-      - key: JAVA_OPTS
-        value: -Xmx512m -Xms256m
-      - key: SPRING_PROFILES_ACTIVE
-        value: production
-    healthCheckPath: /api/actuator/health
-    autoDeploy: true
-    plan: free
+server:
+  port: ${PORT:8080}  # 🔥 CLAVE: Leer variable PORT de Render
+
+spring:
+  datasource:
+    url: jdbc:postgresql://dpg-d4kes924d50c73df8p0g-a.oregon-postgres.render.com:5432/inmobiliaria_dc
+    username: inmobiliaria_user
+    password: p9Gl3NIYhwK4aRKP3Qbt2UECVFijxos3
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+
+logging:
+  level:
+    org.springframework: WARN
