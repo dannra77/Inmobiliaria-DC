@@ -16,7 +16,6 @@
     <artifactId>Inmobiliaria-DC</artifactId>
     <version>1.0.0</version>
     <name>Inmobiliaria-DC</name>
-    <description>Web Service para Inmobiliaria DC</description>
 
     <properties>
         <java.version>21</java.version>
@@ -31,19 +30,22 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
+        <!-- IMPORTANTE: Solo PostgreSQL, NO MySQL -->
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
         </dependency>
+        <!-- REMOVER cualquier dependencia de MySQL si existe -->
+        <!--
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId> <-- ELIMINAR ESTO
+        </dependency>
+        -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
-        </dependency>
-        <!-- Para health check -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
     </dependencies>
 
