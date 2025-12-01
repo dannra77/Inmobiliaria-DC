@@ -16,22 +16,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .anyRequest().permitAll()  // ✅ PERMITIR TODO
                 )
-                .csrf(csrf -> csrf.disable());
+                .csrf(csrf -> csrf.disable())
+                .formLogin(form -> form.disable())  // ✅ ELIMINAR login
+                .logout(logout -> logout.disable()); // ✅ ELIMINAR logout
 
         return http.build();
     }
-
-    // ✅ COMENTADO temporalmente - no se necesita autenticación
-    /*
-    @Bean
-    public UserDetailsService userDetailsService() {
-        UserDetails user = User.withDefaultPasswordEncoder()
-                .username("admin")
-                .password("1234")
-                .roles("USER")
-                .build();
-
-        return new InMemoryUserDetailsManager(user);
-    }
-    */
 }
