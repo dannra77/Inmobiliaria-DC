@@ -1,9 +1,0 @@
-{
-  "build": {
-    "builder": "NIXPACKS"
-  },
-  "deploy": {
-    "startCommand": "java -jar target/Inmobiliaria-DC-1.0.0.jar",
-    "restartPolicyType": "ON_FAILURE"
-  }
-}
