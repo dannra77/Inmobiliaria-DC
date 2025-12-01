@@ -89,6 +89,16 @@
                     <propertiesEncoding>UTF-8</propertiesEncoding>
                 </configuration>
             </plugin>
+
+            <!-- Dentro de la sección <build><plugins> de tu pom.xml -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.3.0</version> <!-- Puedes usar una versión reciente -->
+                <configuration>
+                    <propertiesEncoding>ISO-8859-1</propertiesEncoding>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 </project>
